@@ -1,0 +1,71 @@
+﻿<Window x:Class="MovieApp_Adminpanel.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Admin Authentication - Movie App" 
+        Height="500" Width="350"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="#2c2c2c" Cursor="">
+	<!-- Темный фон -->
+
+	<Grid>
+		<Border Background="#3a3a3a" Margin="20" Padding="20" CornerRadius="10">
+			<StackPanel>
+
+				<!-- Header -->
+				<StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
+					<TextBlock Text="🎬" FontSize="40" HorizontalAlignment="Center" Foreground="White"/>
+					<TextBlock Text="Movie App" FontSize="20" FontWeight="Bold" 
+                               HorizontalAlignment="Center" Margin="0,5,0,0" Foreground="White"/>
+					<TextBlock Text="Административная панель" FontSize="14" 
+                               Foreground="#bbbbbb" HorizontalAlignment="Center"/>
+				</StackPanel>
+
+				<!-- Step 1: Login -->
+				<StackPanel x:Name="Step1Panel">
+					<TextBlock Text="Вход в систему" FontSize="16" FontWeight="Bold" Margin="0,0,0,15" Foreground="White"/>
+
+					<TextBlock Text="Логин:" Foreground="White" Margin="0,0,0,5"/>
+					<TextBox x:Name="UsernameTextBox" Text="admin"/>
+
+					<TextBlock Text="Пароль:" Foreground="White" Margin="0,10,0,5"/>
+					<PasswordBox x:Name="PasswordBox" Password="admin123"/>
+
+					<Button Content="🔐 Войти" Margin="0,0,0,0" Click="LoginButton_Click" Cursor="Hand"/>
+				</StackPanel>
+
+				<!-- Step 2: MFA -->
+				<StackPanel x:Name="Step2Panel" Visibility="Collapsed">
+					<TextBlock Text="Двухфакторная аутентификация" FontSize="16" 
+                               FontWeight="Bold" Margin="0,0,0,15" Foreground="White"/>
+
+					<TextBlock Text="Введите код из приложения:" Margin="0,0,0,10" Foreground="White"/>
+					<TextBox x:Name="MfaCodeTextBox" FontSize="18" FontWeight="Bold" 
+                             HorizontalContentAlignment="Center" MaxLength="6" 
+                             TextChanged="MfaCodeTextBox_TextChanged"/>
+
+					<StackPanel Orientation="Horizontal" Margin="0,15,0,0" HorizontalAlignment="Center">
+						<Button Content="🔙 Назад" Background="#555555" Click="BackButton_Click"/>
+						<Button Content="✅ Подтвердить" Background="#27ae60" Margin="10,0,0,0" 
+                                Click="VerifyMfaButton_Click"/>
+					</StackPanel>
+				</StackPanel>
+
+				<!-- Status -->
+				<Border x:Name="StatusBorder" Background="#444444" BorderBrush="#666666" 
+                        BorderThickness="1" Margin="0,20,0,0" Padding="10" 
+                        Visibility="Collapsed">
+					<TextBlock x:Name="StatusText" TextWrapping="Wrap" TextAlignment="Center" Foreground="White"/>
+				</Border>
+			</StackPanel>
+		</Border>
+		<!-- Всплывающее сообщение -->
+		<Border x:Name="PopupStatus" Background="#c0392b" 
+            CornerRadius="6" Padding="10,5" 
+            HorizontalAlignment="Center" VerticalAlignment="Top" 
+            Margin="0,20,0,0" Opacity="0"
+            Visibility="Collapsed">
+			<TextBlock x:Name="PopupStatusText" Foreground="White" FontWeight="Bold"/>
+		</Border>
+	</Grid>
+</Window>
