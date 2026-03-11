@@ -14,6 +14,18 @@
 			</StackPanel>
 		</GroupBox>
 
+		<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+			<TextBlock Text="Всего пользователей:" VerticalAlignment="Center"/>
+			<TextBlock x:Name="TotalUsersText" Margin="5,0"/>
+			<TextBlock Text="Всего отзывов:" Margin="20,0,0,0" VerticalAlignment="Center"/>
+			<TextBlock x:Name="TotalReviewsText" Margin="5,0"/>
+			<TextBlock Text="Средний рейтинг:" Margin="20,0,0,0" VerticalAlignment="Center"/>
+			<TextBlock x:Name="AvgRatingText" Margin="5,0"/>
+			<TextBlock Text="Активных пользователей:" Margin="20,0,0,0" VerticalAlignment="Center"/>
+			<TextBlock x:Name="ActiveUsersText" Margin="5,0"/>
+			<Button Content="Обновить" Margin="20,0,0,0" Click="Refresh_Click"/>
+		</StackPanel>
+
 		<TabControl>
 			<TabItem Header="Активность пользователей">
 				<DataGrid x:Name="UserActivityGrid" AutoGenerateColumns="False" Height="300">

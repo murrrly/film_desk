@@ -1,33 +1,71 @@
-﻿using System.Windows;
+﻿using MovieApp_Adminpanel.Services;
+using Npgsql;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace MovieApp_Adminpanel.Pages
 {
 	public partial class AdminProfilePage : Page
 	{
+		DatabaseService db = new DatabaseService();
+
+		int adminId = 1;
+
 		public AdminProfilePage()
 		{
 			InitializeComponent();
-			LoadAuditLog();
+			LoadProfile();
 		}
 
-		private void LoadAuditLog()
+		private void LoadProfile()
 		{
-			AuditLogGrid.ItemsSource = new[]
+			using var conn = db.GetConnection();
+			conn.Open();
+
+			var cmd = new NpgsqlCommand(
+				"SELECT username,email FROM admins WHERE id=@id", conn);
+
+			cmd.Parameters.AddWithValue("id", adminId);
+
+			using var reader = cmd.ExecuteReader();
+
+			if (reader.Read())
 			{
-				new { CreatedAt="2026-03-03 09:00", Action="Вход в систему" },
-				new { CreatedAt="2026-03-02 18:00", Action="Одобрена рецензия" }
-			};
+				UsernameText.Text = reader.GetString(0);
+				EmailBox.Text = reader.GetString(1);
+			}
+		}
+
+		private void Save_Click(object sender, RoutedEventArgs e)
+		{
+			using var conn = db.GetConnection();
+			conn.Open();
+
+			var cmd = new NpgsqlCommand(
+				"UPDATE admins SET email=@email WHERE id=@id", conn);
+
+			cmd.Parameters.AddWithValue("email", EmailBox.Text);
+			cmd.Parameters.AddWithValue("id", adminId);
+
+			cmd.ExecuteNonQuery();
+
+			MessageBox.Show("Профиль обновлён");
 		}
 
 		private void ChangePassword_Click(object sender, RoutedEventArgs e)
 		{
-			MessageBox.Show("Пароль успешно изменён.", "Профиль", MessageBoxButton.OK, MessageBoxImage.Information);
-		}
+			using var conn = db.GetConnection();
+			conn.Open();
 
-		private void Logout_Click(object sender, RoutedEventArgs e)
-		{
-			MessageBox.Show("Вы вышли из системы.", "Профиль", MessageBoxButton.OK, MessageBoxImage.Information);
+			var cmd = new NpgsqlCommand(
+				"UPDATE admins SET password_hash=@pass WHERE id=@id", conn);
+
+			cmd.Parameters.AddWithValue("pass", PasswordBox.Password);
+			cmd.Parameters.AddWithValue("id", adminId);
+
+			cmd.ExecuteNonQuery();
+
+			MessageBox.Show("Пароль изменён");
 		}
 	}
 }

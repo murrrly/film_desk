@@ -4,19 +4,47 @@
       Title="Пользователи">
 
 	<StackPanel Margin="20">
+
 		<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-			<TextBox x:Name="SearchBox" Width="250"/>
-			<Button Content="Найти" Margin="10,0" Width="80" Click="SearchUsers_Click"/>
-			<Button Content="Экспорт в CSV" Margin="10,0" Width="100" Click="ExportCsv_Click"/>
+			<TextBox x:Name="SearchBox"
+                     Width="250"
+                     Height="28"
+                     VerticalContentAlignment="Center"
+                     TextChanged="SearchBox_TextChanged"
+                     ToolTip="Поиск по имени или email"/>
+
+			<Button Content="Экспорт в CSV"
+                    Margin="10,0"
+                    Width="120"
+                    Click="ExportCsv_Click"/>
 		</StackPanel>
 
-		<DataGrid x:Name="UsersGrid" AutoGenerateColumns="False" IsReadOnly="True" Height="500" MouseDoubleClick="UsersGrid_MouseDoubleClick">
+		<DataGrid x:Name="UsersGrid"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  Height="500">
+
 			<DataGrid.Columns>
-				<DataGridTextColumn Header="Имя пользователя" Binding="{Binding Username}" Width="200"/>
-				<DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="200"/>
-				<DataGridTextColumn Header="Статус" Binding="{Binding IsActive}" Width="100"/>
-				<DataGridTextColumn Header="Дата регистрации" Binding="{Binding CreatedAt}" Width="150"/>
+
+				<DataGridTextColumn Header="Имя пользователя"
+                                    Binding="{Binding Username}"
+                                    Width="200"/>
+
+				<DataGridTextColumn Header="Email"
+                                    Binding="{Binding Email}"
+                                    Width="200"/>
+
+				<DataGridTextColumn Header="Статус"
+                                    Binding="{Binding IsActive}"
+                                    Width="100"/>
+
+				<DataGridTextColumn Header="Дата регистрации"
+                                    Binding="{Binding CreatedAt}"
+                                    Width="150"/>
+
 			</DataGrid.Columns>
+
 		</DataGrid>
+
 	</StackPanel>
 </Page>

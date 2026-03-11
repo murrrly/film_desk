@@ -1,10 +1,14 @@
-﻿using System.Windows;
+﻿using MovieApp_Adminpanel.Services;
+using Npgsql;
+using System.Collections.Generic;
 using System.Windows.Controls;
 
 namespace MovieApp_Adminpanel.Pages
 {
 	public partial class MonitoringPage : Page
 	{
+		DatabaseService db = new DatabaseService();
+
 		public MonitoringPage()
 		{
 			InitializeComponent();
@@ -13,21 +17,39 @@ namespace MovieApp_Adminpanel.Pages
 
 		private void LoadLogs()
 		{
-			LogsGrid.ItemsSource = new[]
+			var logs = new List<dynamic>();
+
+			using var conn = db.GetConnection();
+			conn.Open();
+
+			var cmd = new NpgsqlCommand(@"
+                SELECT u.username,
+                       ua.activity_type,
+                       ua.created_at
+                FROM user_activity ua
+                JOIN users u ON u.id = ua.user_id
+                ORDER BY ua.created_at DESC
+                LIMIT 100
+            ", conn);
+
+			using var reader = cmd.ExecuteReader();
+
+			while (reader.Read())
 			{
-				new { CreatedAt = "2026-03-03 12:00", Type="TMDB", Message="Ошибка авторизации" },
-				new { CreatedAt = "2026-03-02 16:00", Type="Админ", Message="Блокировка пользователя" }
-			};
+				logs.Add(new
+				{
+					Username = reader.GetString(0),
+					Activity = reader.GetString(1),
+					Date = reader.GetDateTime(2).ToString("yyyy-MM-dd HH:mm")
+				});
+			}
+
+			LogsGrid.ItemsSource = logs;
 		}
 
-		private void ApplyFilter_Click(object sender, RoutedEventArgs e)
+		private void Refresh_Click(object sender, System.Windows.RoutedEventArgs e)
 		{
-			MessageBox.Show("Фильтры применены", "Мониторинг", MessageBoxButton.OK, MessageBoxImage.Information);
-		}
-
-		private void ClearOldLogs_Click(object sender, RoutedEventArgs e)
-		{
-			MessageBox.Show("Логи старше 30 дней удалены", "Мониторинг", MessageBoxButton.OK, MessageBoxImage.Information);
+			LoadLogs();
 		}
 	}
 }
