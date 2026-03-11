@@ -5,58 +5,47 @@
 
 	<Application.Resources>
 
-		<!-- ========= ЦВЕТА ========= -->
-		<Color x:Key="PrimaryRed">#FF0000</Color>
-		<Color x:Key="LightRed">#FFCCCC</Color>
-		<Color x:Key="BlackMain">#000000</Color>
-		<Color x:Key="DarkBlack">#0F0F0F</Color>
-		<Color x:Key="MediumBlack">#333333</Color>
-		<Color x:Key="Gray">#999999</Color>
-		<Color x:Key="LightGray">#FCFCFD</Color>
-		<Color x:Key="White">#FFFFFF</Color>
+		<!-- ========= ЦВЕТА (Brush) ========= -->
+		<SolidColorBrush x:Key="PrimaryRed" Color="#FF0000"/>
+		<SolidColorBrush x:Key="LightRed" Color="#FFCCCC"/>
+		<SolidColorBrush x:Key="BlackMain" Color="#000000"/>
+		<SolidColorBrush x:Key="DarkBlack" Color="#0F0F0F"/>
+		<SolidColorBrush x:Key="MediumBlack" Color="#333333"/>
+		<SolidColorBrush x:Key="Gray" Color="#999999"/>
+		<SolidColorBrush x:Key="LightGray" Color="#FCFCFD"/>
+		<SolidColorBrush x:Key="White" Color="#FFFFFF"/>
 
-		<!-- ========= BRUSHES ========= -->
-		<SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryRed}"/>
-		<SolidColorBrush x:Key="LightRedBrush" Color="{StaticResource LightRed}"/>
-		<SolidColorBrush x:Key="TextBrush" Color="{StaticResource MediumBlack}"/>
-		<SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource LightGray}"/>
-		<SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
-		<SolidColorBrush x:Key="GrayBrush" Color="{StaticResource Gray}"/>
+		<DropShadowEffect x:Key="DropShadowEffect" Color="#888" BlurRadius="10" ShadowDepth="2" Opacity="0.3"/>
 
-		<!-- ========= WINDOW ========= -->
-		<Style TargetType="Window">
-			<Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
-			<Setter Property="FontFamily" Value="Segoe UI"/>
+		<Style TargetType="{x:Type Control}">
+			<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
 		</Style>
 
-		<!-- ========= TEXT ========= -->
+		<!-- ItemsControl -->
+		<Style TargetType="ItemsControl">
+			<Setter Property="Focusable" Value="False"/>
+		</Style>
+
+		<!-- ContentPresenter  -->
+		<Style TargetType="ContentPresenter">
+			<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+			<Setter Property="SnapsToDevicePixels" Value="True"/>
+		</Style>
+
+		<!-- ScrollViewer -->
+		<Style TargetType="ScrollViewer">
+			<Setter Property="Focusable" Value="False"/>
+			<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+		</Style>
+
+		<!-- TextBlock -->
 		<Style TargetType="TextBlock">
-			<Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+			<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
 		</Style>
 
-		<!-- ========= INPUT ========= -->
-		<Style TargetType="TextBox">
-			<Setter Property="Height" Value="38"/>
-			<Setter Property="Padding" Value="8"/>
-			<Setter Property="Background" Value="{StaticResource WhiteBrush}"/>
-			<Setter Property="BorderBrush" Value="{StaticResource GrayBrush}"/>
-			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="Margin" Value="0,5,0,15"/>
-		</Style>
-
-		<Style TargetType="PasswordBox">
-			<Setter Property="Height" Value="38"/>
-			<Setter Property="Padding" Value="8"/>
-			<Setter Property="Background" Value="{StaticResource WhiteBrush}"/>
-			<Setter Property="BorderBrush" Value="{StaticResource GrayBrush}"/>
-			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="Margin" Value="0,5,0,20"/>
-		</Style>
-
-		<!-- ========= BUTTON ========= -->
 		<Style TargetType="Button">
 			<Setter Property="Height" Value="40"/>
-			<Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+			<Setter Property="Background" Value="{StaticResource PrimaryRed}"/>
 			<Setter Property="Foreground" Value="White"/>
 			<Setter Property="FontWeight" Value="Bold"/>
 			<Setter Property="BorderThickness" Value="0"/>
@@ -74,5 +63,186 @@
 			</Setter>
 		</Style>
 
+		<Style TargetType="PasswordBox">
+			<Setter Property="Background" Value="{StaticResource White}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource MediumBlack}"/>
+			<Setter Property="BorderThickness" Value="1.5"/>
+			<Setter Property="Padding" Value="10,0"/>
+			<Setter Property="Foreground" Value="{StaticResource DarkBlack}"/>
+			<Setter Property="Height" Value="36"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="PasswordBox">
+						<Grid>
+							<!-- Основная рамка -->
+							<Border x:Name="Border"
+                            CornerRadius="15"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Effect="{StaticResource DropShadowEffect}"/>
+
+							<!-- Контент пароля -->
+							<ScrollViewer x:Name="PART_ContentHost"
+                                  Margin="{TemplateBinding Padding}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+
+							<!-- Placeholder -->
+							<TextBlock x:Name="PlaceholderText"
+                               Text="{TemplateBinding Tag}"
+                               Margin="18,0,0,0"
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource Gray}"
+                               IsHitTestVisible="False"/>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<!-- Hover -->
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter TargetName="Border" Property="Background" Value="{StaticResource LightGray}"/>
+							</Trigger>
+							<!-- Focus -->
+							<Trigger Property="IsKeyboardFocused" Value="True">
+								<Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryRed}"/>
+								<Setter TargetName="Border" Property="BorderThickness" Value="2"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<!-- ========= Глобальный стиль TextBox ========= -->
+		<Style TargetType="TextBox">
+			<Setter Property="Background" Value="{StaticResource White}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource MediumBlack}"/>
+			<Setter Property="BorderThickness" Value="1.5"/>
+			<Setter Property="Padding" Value="10,0"/>
+			<Setter Property="Foreground" Value="{StaticResource DarkBlack}"/>
+			<Setter Property="Height" Value="36"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="TextBox">
+						<Grid>
+							<Border x:Name="Border"
+									CornerRadius="15"
+									Background="{TemplateBinding Background}"
+									BorderBrush="{TemplateBinding BorderBrush}"
+									BorderThickness="{TemplateBinding BorderThickness}"
+									Effect="{StaticResource DropShadowEffect}"/>
+							<ScrollViewer x:Name="PART_ContentHost"
+										  Margin="{TemplateBinding Padding}"
+										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+							<TextBlock x:Name="PlaceholderText"
+									   Text="{TemplateBinding Tag}"
+									   Margin="18,0,0,0"
+									   VerticalAlignment="Center"
+									   Foreground="{StaticResource Gray}"
+									   IsHitTestVisible="False"
+									   Visibility="Collapsed"/>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="Text" Value="">
+								<Setter TargetName="PlaceholderText" Property="Visibility" Value="Visible"/>
+							</Trigger>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter TargetName="Border" Property="Background" Value="{StaticResource LightGray}"/>
+							</Trigger>
+							<Trigger Property="IsKeyboardFocused" Value="True">
+								<Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryRed}"/>
+								<Setter TargetName="Border" Property="BorderThickness" Value="2"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<!-- ========= Глобальный стиль ComboBox ========= -->
+		<Style TargetType="ComboBox">
+			<Setter Property="Foreground" Value="{StaticResource DarkBlack}"/>
+			<Setter Property="Background" Value="{StaticResource White}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource MediumBlack}"/>
+			<Setter Property="BorderThickness" Value="1.5"/>
+			<Setter Property="Padding" Value="6,3"/>
+			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="Width" Value="220"/>
+			<Setter Property="Height" Value="36"/>
+			<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+			<Setter Property="IsEditable" Value="False"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="ComboBox">
+						<Grid>
+							<Border x:Name="Border"
+									Background="{TemplateBinding Background}"
+									BorderBrush="{TemplateBinding BorderBrush}"
+									BorderThickness="{TemplateBinding BorderThickness}"
+									CornerRadius="12"
+									SnapsToDevicePixels="True"
+									Effect="{StaticResource DropShadowEffect}"/>
+							<DockPanel Margin="2">
+								<ContentPresenter x:Name="ContentSite"
+												  Content="{TemplateBinding SelectionBoxItem}"
+												  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+												  VerticalAlignment="Center"
+												  HorizontalAlignment="Left"
+												  Margin="10,0"/>
+								<ToggleButton DockPanel.Dock="Right"
+											  Focusable="False"
+											  IsTabStop="False"
+											  Background="Transparent"
+											  BorderBrush="Transparent"
+											  Width="180"
+											  Height="24"
+											  IsChecked="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+											  ClickMode="Press">
+									<ToggleButton.Template>
+										<ControlTemplate TargetType="ToggleButton">
+											<Border Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
+												<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+											</Border>
+										</ControlTemplate>
+									</ToggleButton.Template>
+								</ToggleButton>
+							</DockPanel>
+							<Popup Name="Popup"
+								   Placement="Bottom"
+								   IsOpen="{TemplateBinding IsDropDownOpen}"
+								   AllowsTransparency="True"
+								   Focusable="False"
+								   PopupAnimation="Fade">
+								<Grid Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="250">
+									<Border x:Name="DropDownBorder"
+											Background="{StaticResource White}"
+											BorderBrush="{StaticResource MediumBlack}"
+											BorderThickness="2"
+											CornerRadius="12"
+											Effect="{StaticResource DropShadowEffect}"/>
+									<ScrollViewer Margin="3" Padding="3" SnapsToDevicePixels="True" Focusable="False" KeyboardNavigation.DirectionalNavigation="Contained">
+										<StackPanel IsItemsHost="True"/>
+									</ScrollViewer>
+								</Grid>
+							</Popup>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter TargetName="Border" Property="Background" Value="{StaticResource LightGray}"/>
+							</Trigger>
+							<Trigger Property="IsEnabled" Value="False">
+								<Setter TargetName="Border" Property="Background" Value="{StaticResource Gray}"/>
+								<Setter Property="Foreground" Value="{StaticResource Gray}"/>
+							</Trigger>
+							<Trigger Property="IsDropDownOpen" Value="True">
+								<Setter TargetName="Border" Property="Background" Value="{StaticResource LightGray}"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
 	</Application.Resources>
+
 </Application>
