@@ -3,21 +3,60 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Title="Профиль администратора">
 
-	<StackPanel Margin="20">
-		<TextBlock Text="Профиль администратора" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+	<ScrollViewer>
+		<StackPanel Margin="30" Width="520">
 
-		<TextBlock Text="Имя пользователя"/>
-		<TextBlock x:Name="UsernameText" Margin="0,0,0,10"/>
+			<TextBlock Text="Профиль администратора"
+                       FontSize="26"
+                       FontWeight="Bold"
+                       Margin="0 0 0 20"/>
 
-		<TextBlock Text="Email"/>
-		<TextBox x:Name="EmailBox" Margin="0,0,0,10" IsReadOnly="True"/>
+			<!-- INFO -->
+			<Border Background="#2d2d30" Padding="20" CornerRadius="10" Margin="0 0 0 20">
+				<StackPanel>
+					<TextBlock Text="Информация"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Margin="0 0 0 10"/>
+					<TextBlock Text="Username"/>
+					<TextBlock x:Name="UsernameText" Margin="0 0 0 6"/>
+					<TextBlock Text="Email"/>
+					<TextBlock x:Name="EmailText" Margin="0 0 0 6"/>
+					<TextBlock Text="Role"/>
+					<TextBlock x:Name="RoleText" Margin="0 0 0 6"/>
+					<TextBlock Text="Last login"/>
+					<TextBlock x:Name="LastLoginText"/>
+				</StackPanel>
+			</Border>
 
-		<TextBlock Text="Роль"/>
-		<TextBlock x:Name="RoleText" Margin="0,0,0,20"/>
+			<!-- SECURITY -->
+			<Border Background="#2d2d30" Padding="20" CornerRadius="10" Margin="0 0 0 20">
+				<StackPanel>
+					<TextBlock Text="Безопасность"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Margin="0 0 0 10"/>
+					<TextBlock Text="Новый пароль"/>
+					<PasswordBox x:Name="PasswordBox" Margin="0 0 0 10"/>
+					<Button Content="Сменить пароль"
+                            Height="35"
+                            Click="ChangePassword_Click"/>
+				</StackPanel>
+			</Border>
 
-		<TextBlock Text="Новый пароль"/>
-		<PasswordBox x:Name="PasswordBox" Width="250" Margin="0,0,0,20"/>
+			<!-- STATS -->
+			<Border Background="#2d2d30" Padding="20" CornerRadius="10">
+				<StackPanel>
+					<TextBlock Text="Моя активность"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Margin="0 0 0 10"/>
+					<TextBlock x:Name="ModeratedReviewsText"/>
+					<TextBlock x:Name="ActionsTodayText"/>
+					<TextBlock x:Name="ActiveSessionsText"/>
+				</StackPanel>
+			</Border>
 
-		<Button Content="Сохранить" Width="120" Click="Save_Click"/>
-	</StackPanel>
+		</StackPanel>
+	</ScrollViewer>
 </Page>

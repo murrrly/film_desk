@@ -1,13 +1,12 @@
-﻿<Window x:Class="MovieApp_Adminpanel.LoginWindow"
+﻿<!-- LoginWindow.xaml -->
+<Window x:Class="MovieApp_Adminpanel.LoginWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:svgc="http://sharpvectors.codeplex.com/runtime/"
         Title="Admin Authentication - Movie App" 
         Height="460" Width="350"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Background="#2c2c2c" Cursor="">
-	<!-- Темный фон -->
+        Background="#2c2c2c">
 
 	<Grid>
 		<Border Background="#3a3a3a" Margin="20" Padding="10" CornerRadius="10">
@@ -15,11 +14,8 @@
 
 				<!-- Header -->
 				<StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
-					<!-- Лого текстом -->
 					<Image Source="/logo/name_logo.png" Width="200" Height="60" />
-					<!-- Лого картинка -->
 					<Image Source="logo/logo.png" Width="120" Height="30"/>
-
 					<TextBlock Text="Административная панель" FontSize="14" 
                                Foreground="#bbbbbb" HorizontalAlignment="Center"/>
 				</StackPanel>
@@ -27,40 +23,35 @@
 				<!-- Step 1: Login -->
 				<StackPanel x:Name="Step1Panel">
 					<TextBlock Text="Вход в систему" FontSize="16" FontWeight="Bold" Margin="0,0,0,15" Foreground="White"/>
-
 					<TextBlock Text="Логин:" Foreground="White" Margin="0,0,0,5"/>
-					<TextBox x:Name="UsernameTextBox" Text="admin"/>
+					<TextBox x:Name="UsernameTextBox" Text="admin" />
 
 					<TextBlock Text="Пароль:" Foreground="White" Margin="0,10,0,5"/>
 					<PasswordBox x:Name="PasswordBox" Password="admin123"/>
 
-					<Button Content="🔐 Войти" Margin="0,20,0,0" Click="LoginButton_Click" Cursor="Hand"/>
+					<Button Content="🔐 Войти" Margin="0,20,0,0" Click="LoginButton_Click" Cursor="Hand" IsDefault="True"/>
 				</StackPanel>
 
 				<!-- Step 2: MFA -->
 				<StackPanel x:Name="Step2Panel" Visibility="Collapsed">
 					<TextBlock Text="Двухфакторная аутентификация" FontSize="16" 
-               FontWeight="Bold" Margin="0,0,0,15" Foreground="White"/>
-
+                               FontWeight="Bold" Margin="0,0,0,15" Foreground="White"/>
 					<TextBlock Text="Введите код из приложения:" Margin="0,0,0,10" Foreground="White"/>
 					<TextBox x:Name="MfaCodeTextBox" FontSize="18" FontWeight="Bold" 
-             HorizontalContentAlignment="Center" MaxLength="6" 
-             TextChanged="MfaCodeTextBox_TextChanged"/>
+                             HorizontalContentAlignment="Center" MaxLength="6"/>
 
 					<!-- Кнопки -->
 					<Grid Margin="0,15,0,0" HorizontalAlignment="Center">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto"/>
 							<ColumnDefinition Width="10"/>
-							<!-- Отступ -->
 							<ColumnDefinition Width="Auto"/>
 						</Grid.ColumnDefinitions>
 
 						<Button Grid.Column="0" Content="🔙 Назад" Background="#555555" 
-            Height="40" FontWeight="Bold" Width="120" Click="BackButton_Click"/>
-
+                                Height="40" FontWeight="Bold" Width="120" Click="BackButton_Click"/>
 						<Button Grid.Column="2" Content="✅ Подтвердить" Background="#27ae60" 
-            Height="40" FontWeight="Bold" Width="120" Click="VerifyMfaButton_Click"/>
+                                Height="40" FontWeight="Bold" Width="120" Click="VerifyMfaButton_Click" IsDefault="True"/>
 					</Grid>
 				</StackPanel>
 
@@ -72,12 +63,13 @@
 				</Border>
 			</StackPanel>
 		</Border>
+
 		<!-- Всплывающее сообщение -->
 		<Border x:Name="PopupStatus" Background="#c0392b" 
-            CornerRadius="6" Padding="10,5" 
-            HorizontalAlignment="Center" VerticalAlignment="Top" 
-            Margin="0,20,0,0" Opacity="0"
-            Visibility="Collapsed">
+                CornerRadius="6" Padding="10,5" 
+                HorizontalAlignment="Center" VerticalAlignment="Top" 
+                Margin="0,20,0,0" Opacity="0"
+                Visibility="Collapsed">
 			<TextBlock x:Name="PopupStatusText" Foreground="White" FontWeight="Bold"/>
 		</Border>
 	</Grid>

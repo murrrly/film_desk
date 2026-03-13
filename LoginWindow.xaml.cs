@@ -3,12 +3,14 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using MovieApp_Adminpanel.Pages;
 
 namespace MovieApp_Adminpanel
 {
 	public partial class LoginWindow : Window
 	{
 		private bool _isMfaStep = false;
+		private long _currentAdminId = 1; // тестовый админ ID (из БД)
 
 		public LoginWindow()
 		{
@@ -17,13 +19,13 @@ namespace MovieApp_Adminpanel
 
 		private void LoginButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (string.IsNullOrEmpty(UsernameTextBox.Text) ||
-				string.IsNullOrEmpty(PasswordBox.Password))
+			if (string.IsNullOrEmpty(UsernameTextBox.Text) || string.IsNullOrEmpty(PasswordBox.Password))
 			{
 				ShowStatus("⚠ Пожалуйста, заполните все поля", false);
 				return;
 			}
 
+			// Тестовые данные
 			if (UsernameTextBox.Text != "admin" || PasswordBox.Password != "admin123")
 			{
 				ShowStatus("❌ Неверный логин или пароль", false);
@@ -32,32 +34,26 @@ namespace MovieApp_Adminpanel
 				return;
 			}
 
-			// Сбрасываем красную рамку при успешном логине
 			UsernameTextBox.ClearValue(Border.BorderBrushProperty);
 			PasswordBox.ClearValue(Border.BorderBrushProperty);
 
 			ShowStatus("✅ Успешная авторизация! Переход к MFA...", true);
 
-			Task.Delay(800).ContinueWith(_ =>
-			{
-				Dispatcher.Invoke(ShowMfaStep);
-			});
+			Task.Delay(800).ContinueWith(_ => Dispatcher.Invoke(ShowMfaStep));
 		}
 
 		private async void ShowStatus(string message, bool isSuccess)
 		{
 			PopupStatusText.Text = message;
 			PopupStatus.Background = isSuccess
-				? new SolidColorBrush(Color.FromRgb(39, 174, 96)) // зеленый
-				: new SolidColorBrush(Color.FromRgb(192, 57, 43)); // красный
+				? new SolidColorBrush(Color.FromRgb(39, 174, 96))
+				: new SolidColorBrush(Color.FromRgb(192, 57, 43));
 
 			PopupStatus.Visibility = Visibility.Visible;
 
-			// Анимация появления
 			var fadeIn = new System.Windows.Media.Animation.DoubleAnimation(0, 1, new Duration(TimeSpan.FromMilliseconds(300)));
 			PopupStatus.BeginAnimation(Border.OpacityProperty, fadeIn);
 
-			// Автоматическое скрытие через 3 секунды
 			await Task.Delay(3000);
 
 			var fadeOut = new System.Windows.Media.Animation.DoubleAnimation(1, 0, new Duration(TimeSpan.FromMilliseconds(300)));
@@ -71,7 +67,6 @@ namespace MovieApp_Adminpanel
 			Step1Panel.Visibility = Visibility.Collapsed;
 			Step2Panel.Visibility = Visibility.Visible;
 			StatusBorder.Visibility = Visibility.Collapsed;
-
 			MfaCodeTextBox.Focus();
 			MfaCodeTextBox.SelectAll();
 		}
@@ -92,19 +87,13 @@ namespace MovieApp_Adminpanel
 				return;
 			}
 
-			if (MfaCodeTextBox.Text == "123456")
+			if (MfaCodeTextBox.Text == "123456") // тестовый код
 			{
-				ShowStatus("✅ Успешная аутентификация! Загрузка панели...", true);
-
-				Task.Delay(1000).ContinueWith(_ =>
-				{
-					Dispatcher.Invoke(() =>
-					{
-						var mainWindow = new MainWindow();
-						mainWindow.Show();
-						this.Close();
-					});
-				});
+				var profilePage = new AdminProfilePage(); // ✅ передаем ID
+				var mainWindow = new MainWindow();
+				mainWindow.MainFrame.Content = profilePage; // отображаем страницу профиля
+				mainWindow.Show();
+				this.Close();
 			}
 			else
 			{
