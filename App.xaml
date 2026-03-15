@@ -5,7 +5,6 @@
 
 	<Application.Resources>
 
-		<!-- ========= ЦВЕТА (Brush) ========= -->
 		<SolidColorBrush x:Key="PrimaryRed" Color="#FF0000"/>
 		<SolidColorBrush x:Key="LightRed" Color="#FFCCCC"/>
 		<SolidColorBrush x:Key="BlackMain" Color="#000000"/>
@@ -21,24 +20,20 @@
 			<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
 		</Style>
 
-		<!-- ItemsControl -->
 		<Style TargetType="ItemsControl">
 			<Setter Property="Focusable" Value="False"/>
 		</Style>
 
-		<!-- ContentPresenter  -->
 		<Style TargetType="ContentPresenter">
 			<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
 			<Setter Property="SnapsToDevicePixels" Value="True"/>
 		</Style>
 
-		<!-- ScrollViewer -->
 		<Style TargetType="ScrollViewer">
 			<Setter Property="Focusable" Value="False"/>
 			<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
 		</Style>
 
-		<!-- TextBlock -->
 		<Style TargetType="TextBlock">
 			<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
 		</Style>
@@ -53,10 +48,8 @@
 			<Setter Property="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="Button">
-						<Border Background="{TemplateBinding Background}"
-                                CornerRadius="6">
-							<ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
+						<Border Background="{TemplateBinding Background}" CornerRadius="6">
+							<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
 						</Border>
 					</ControlTemplate>
 				</Setter.Value>
@@ -75,33 +68,26 @@
 				<Setter.Value>
 					<ControlTemplate TargetType="PasswordBox">
 						<Grid>
-							<!-- Основная рамка -->
 							<Border x:Name="Border"
-                            CornerRadius="15"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            Effect="{StaticResource DropShadowEffect}"/>
-
-							<!-- Контент пароля -->
+                                    CornerRadius="15"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Effect="{StaticResource DropShadowEffect}"/>
 							<ScrollViewer x:Name="PART_ContentHost"
-                                  Margin="{TemplateBinding Padding}"
-                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-
-							<!-- Placeholder -->
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
 							<TextBlock x:Name="PlaceholderText"
-                               Text="{TemplateBinding Tag}"
-                               Margin="18,0,0,0"
-                               VerticalAlignment="Center"
-                               Foreground="{StaticResource Gray}"
-                               IsHitTestVisible="False"/>
+                                       Text="{TemplateBinding Tag}"
+                                       Margin="18,0,0,0"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource Gray}"
+                                       IsHitTestVisible="False"/>
 						</Grid>
 						<ControlTemplate.Triggers>
-							<!-- Hover -->
 							<Trigger Property="IsMouseOver" Value="True">
 								<Setter TargetName="Border" Property="Background" Value="{StaticResource LightGray}"/>
 							</Trigger>
-							<!-- Focus -->
 							<Trigger Property="IsKeyboardFocused" Value="True">
 								<Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryRed}"/>
 								<Setter TargetName="Border" Property="BorderThickness" Value="2"/>
@@ -112,7 +98,6 @@
 			</Setter>
 		</Style>
 
-		<!-- ========= Глобальный стиль TextBox ========= -->
 		<Style TargetType="TextBox">
 			<Setter Property="Background" Value="{StaticResource White}"/>
 			<Setter Property="BorderBrush" Value="{StaticResource MediumBlack}"/>
@@ -126,21 +111,21 @@
 					<ControlTemplate TargetType="TextBox">
 						<Grid>
 							<Border x:Name="Border"
-									CornerRadius="15"
-									Background="{TemplateBinding Background}"
-									BorderBrush="{TemplateBinding BorderBrush}"
-									BorderThickness="{TemplateBinding BorderThickness}"
-									Effect="{StaticResource DropShadowEffect}"/>
+                                    CornerRadius="15"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Effect="{StaticResource DropShadowEffect}"/>
 							<ScrollViewer x:Name="PART_ContentHost"
-										  Margin="{TemplateBinding Padding}"
-										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
 							<TextBlock x:Name="PlaceholderText"
-									   Text="{TemplateBinding Tag}"
-									   Margin="18,0,0,0"
-									   VerticalAlignment="Center"
-									   Foreground="{StaticResource Gray}"
-									   IsHitTestVisible="False"
-									   Visibility="Collapsed"/>
+                                       Text="{TemplateBinding Tag}"
+                                       Margin="18,0,0,0"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource Gray}"
+                                       IsHitTestVisible="False"
+                                       Visibility="Collapsed"/>
 						</Grid>
 						<ControlTemplate.Triggers>
 							<Trigger Property="Text" Value="">
@@ -159,7 +144,6 @@
 			</Setter>
 		</Style>
 
-		<!-- ========= Глобальный стиль ComboBox ========= -->
 		<Style TargetType="ComboBox">
 			<Setter Property="Foreground" Value="{StaticResource DarkBlack}"/>
 			<Setter Property="Background" Value="{StaticResource White}"/>
@@ -176,28 +160,28 @@
 					<ControlTemplate TargetType="ComboBox">
 						<Grid>
 							<Border x:Name="Border"
-									Background="{TemplateBinding Background}"
-									BorderBrush="{TemplateBinding BorderBrush}"
-									BorderThickness="{TemplateBinding BorderThickness}"
-									CornerRadius="12"
-									SnapsToDevicePixels="True"
-									Effect="{StaticResource DropShadowEffect}"/>
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="12"
+                                    SnapsToDevicePixels="True"
+                                    Effect="{StaticResource DropShadowEffect}"/>
 							<DockPanel Margin="2">
 								<ContentPresenter x:Name="ContentSite"
-												  Content="{TemplateBinding SelectionBoxItem}"
-												  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-												  VerticalAlignment="Center"
-												  HorizontalAlignment="Left"
-												  Margin="10,0"/>
+                                                  Content="{TemplateBinding SelectionBoxItem}"
+                                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Left"
+                                                  Margin="10,0"/>
 								<ToggleButton DockPanel.Dock="Right"
-											  Focusable="False"
-											  IsTabStop="False"
-											  Background="Transparent"
-											  BorderBrush="Transparent"
-											  Width="180"
-											  Height="24"
-											  IsChecked="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-											  ClickMode="Press">
+                                              Focusable="False"
+                                              IsTabStop="False"
+                                              Background="Transparent"
+                                              BorderBrush="Transparent"
+                                              Width="180"
+                                              Height="24"
+                                              IsChecked="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                              ClickMode="Press">
 									<ToggleButton.Template>
 										<ControlTemplate TargetType="ToggleButton">
 											<Border Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
@@ -208,18 +192,18 @@
 								</ToggleButton>
 							</DockPanel>
 							<Popup Name="Popup"
-								   Placement="Bottom"
-								   IsOpen="{TemplateBinding IsDropDownOpen}"
-								   AllowsTransparency="True"
-								   Focusable="False"
-								   PopupAnimation="Fade">
+                                   Placement="Bottom"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Fade">
 								<Grid Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="250">
 									<Border x:Name="DropDownBorder"
-											Background="{StaticResource White}"
-											BorderBrush="{StaticResource MediumBlack}"
-											BorderThickness="2"
-											CornerRadius="12"
-											Effect="{StaticResource DropShadowEffect}"/>
+                                            Background="{StaticResource White}"
+                                            BorderBrush="{StaticResource MediumBlack}"
+                                            BorderThickness="2"
+                                            CornerRadius="12"
+                                            Effect="{StaticResource DropShadowEffect}"/>
 									<ScrollViewer Margin="3" Padding="3" SnapsToDevicePixels="True" Focusable="False" KeyboardNavigation.DirectionalNavigation="Contained">
 										<StackPanel IsItemsHost="True"/>
 									</ScrollViewer>
@@ -243,6 +227,93 @@
 			</Setter>
 		</Style>
 
-	</Application.Resources>
+		<Style TargetType="DataGrid">
+			<Setter Property="Background" Value="{StaticResource White}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource MediumBlack}"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="RowBackground" Value="{StaticResource White}"/>
+			<Setter Property="AlternatingRowBackground" Value="{StaticResource LightRed}"/>
+			<Setter Property="AlternatingRowBackground" Value="#FFF5F5"/>
+			<Setter Property="AlternatingRowBackground" Value="{StaticResource LightRed}"/>
 
+			<Setter Property="GridLinesVisibility" Value="None"/>
+			<Setter Property="HeadersVisibility" Value="Column"/>
+			<Setter Property="RowHeaderWidth" Value="0"/>
+			<Setter Property="SelectionMode" Value="Single"/>
+			<Setter Property="FontSize" Value="13"/>
+		</Style>
+
+		<Style TargetType="DataGridColumnHeader">
+			<Setter Property="Background" Value="{StaticResource DarkBlack}"/>
+			<Setter Property="Foreground" Value="{StaticResource White}"/>
+			<Setter Property="Padding" Value="12,8"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="BorderThickness" Value="0,0,1,0"/>
+			<Setter Property="BorderBrush" Value="{StaticResource MediumBlack}"/>
+		</Style>
+
+		<Style TargetType="DataGridCell">
+			<Setter Property="Padding" Value="10,8"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="DataGridCell">
+						<Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+							<ContentPresenter VerticalAlignment="Center"/>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+			<Style.Triggers>
+				<Trigger Property="IsSelected" Value="True">
+					<Setter Property="Background" Value="#FF9999"/>
+					<Setter Property="Foreground" Value="{StaticResource BlackMain}"/>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+
+		<Style TargetType="TabControl">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Padding" Value="0,10,0,0"/>
+		</Style>
+
+		<Style TargetType="TabItem">
+			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="TabItem">
+						<Border x:Name="TabBorder" 
+                                CornerRadius="8,8,0,0" 
+                                BorderThickness="1,1,1,0" 
+                                BorderBrush="{StaticResource Gray}" 
+                                Background="{StaticResource LightGray}" 
+                                Margin="0,0,5,0"
+                                Padding="20,10">
+							<ContentPresenter x:Name="ContentSite"
+                                              ContentSource="Header"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsSelected" Value="True">
+								<Setter TargetName="TabBorder" Property="Background" Value="{StaticResource PrimaryRed}"/>
+								<Setter Property="Foreground" Value="{StaticResource White}"/>
+								<Setter TargetName="TabBorder" Property="BorderBrush" Value="{StaticResource PrimaryRed}"/>
+								<Setter Property="FontWeight" Value="Bold"/>
+							</Trigger>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsMouseOver" Value="True"/>
+									<Condition Property="IsSelected" Value="False"/>
+								</MultiTrigger.Conditions>
+								<Setter TargetName="TabBorder" Property="Background" Value="{StaticResource LightRed}"/>
+							</MultiTrigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+	</Application.Resources>
 </Application>

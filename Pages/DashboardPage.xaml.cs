@@ -80,5 +80,11 @@ namespace MovieApp_Adminpanel.Pages
 		{
 			NavigationService?.Navigate(new MonitoringPage());
 		}
+
+		private void ExitButton_Click(object sender, RoutedEventArgs e)
+		{
+			Application.Current.Shutdown(); // Закрываем приложение
+
+		}
 	}
 }
