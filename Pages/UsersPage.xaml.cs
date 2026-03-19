@@ -1,11 +1,13 @@
 ﻿using MovieApp_Adminpanel.Services;
 using Npgsql;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.IO;
 using System.Text.Json;
 using Microsoft.Win32;
+using System.Windows.Media;
 
 namespace MovieApp_Adminpanel.Pages
 {
@@ -21,39 +23,65 @@ namespace MovieApp_Adminpanel.Pages
 
 		private void LoadUsers(string search)
 		{
-			var users = new List<dynamic>();
-
-			using var conn = db.GetConnection();
-			conn.Open();
-
-			string query = @"
-                SELECT username, email, is_active, created_at
-                FROM users
-                WHERE username ILIKE @search
-                   OR email ILIKE @search
-                ORDER BY created_at DESC";
-
-			using var cmd = new NpgsqlCommand(query, conn);
-
-			cmd.Parameters.AddWithValue("search", $"%{search}%");
-
-			using var reader = cmd.ExecuteReader();
-
-			while (reader.Read())
+			var users = new List<object>();
+			try
 			{
-				users.Add(new
-				{
-					Username = reader.GetString(0),
-					Email = reader.GetString(1),
-					IsActive = reader.GetBoolean(2) ? "Active" : "Blocked",
-					CreatedAt = reader.GetDateTime(3).ToString("yyyy-MM-dd")
-				});
-			}
+				using var conn = db.GetConnection();
+				conn.Open();
 
-			UsersGrid.ItemsSource = users;
+				string query = @"
+                    SELECT username, email, is_active, created_at
+                    FROM users
+                    WHERE (username ILIKE @search OR email ILIKE @search)
+                      AND is_deleted = false
+                    ORDER BY created_at DESC";
+
+				using var cmd = new NpgsqlCommand(query, conn);
+				cmd.Parameters.AddWithValue("search", $"%{search}%");
+
+				using var reader = cmd.ExecuteReader();
+				while (reader.Read())
+				{
+					bool isActive = reader.GetBoolean(2);
+					users.Add(new
+					{
+						Username = reader.GetString(0),
+						Email = reader.GetString(1),
+						IsActive = isActive ? "Активен" : "Забанен",
+						StatusColor = isActive ? Brushes.LightGreen : (SolidColorBrush)Application.Current.Resources["PrimaryRed"],
+						CreatedAt = reader.GetDateTime(3).ToString("dd.MM.yyyy"),
+						ActionText = isActive ? "Заблокировать" : "Разблокировать",
+						ActionColor = isActive ? (SolidColorBrush)Application.Current.Resources["PrimaryRed"] : Brushes.DimGray
+					});
+				}
+				UsersGrid.ItemsSource = users;
+			}
+			catch (Exception ex) { MessageBox.Show("Ошибка загрузки: " + ex.Message); }
 		}
 
-		// поиск при вводе
+		// МЕНЯЕМ СТАТУС ПО КЛИКУ
+		private void ToggleStatus_Click(object sender, RoutedEventArgs e)
+		{
+			var button = sender as Button;
+			string userEmail = button.Tag.ToString(); // Получаем email из Tag
+
+			try
+			{
+				using var conn = db.GetConnection();
+				conn.Open();
+
+				// Инвертируем статус (true -> false, false -> true)
+				string query = "UPDATE users SET is_active = NOT is_active WHERE email = @email";
+				using var cmd = new NpgsqlCommand(query, conn);
+				cmd.Parameters.AddWithValue("email", userEmail);
+				cmd.ExecuteNonQuery();
+
+				// Обновляем список, чтобы увидеть изменения
+				LoadUsers(SearchBox.Text);
+			}
+			catch (Exception ex) { MessageBox.Show("Ошибка смены статуса: " + ex.Message); }
+		}
+
 		private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			LoadUsers(SearchBox.Text);
@@ -61,53 +89,19 @@ namespace MovieApp_Adminpanel.Pages
 
 		private void ExportCsv_Click(object sender, RoutedEventArgs e)
 		{
+			// Твой код экспорта остается рабочим
 			try
 			{
-				if (UsersGrid.Items.Count == 0)
+				SaveFileDialog dialog = new SaveFileDialog { Filter = "JSON file (*.json)|*.json", FileName = "users.json" };
+				if (dialog.ShowDialog() == true)
 				{
-					MessageBox.Show("Нет данных для экспорта");
-					return;
+					var options = new JsonSerializerOptions { WriteIndented = true };
+					string json = JsonSerializer.Serialize(UsersGrid.ItemsSource, options);
+					File.WriteAllText(dialog.FileName, json);
+					MessageBox.Show("Готово!");
 				}
-
-				SaveFileDialog dialog = new SaveFileDialog();
-				dialog.Filter = "JSON file (*.json)|*.json";
-				dialog.FileName = "users_export.json";
-
-				if (dialog.ShowDialog() != true)
-					return;
-
-				var users = new List<object>();
-
-				foreach (var item in UsersGrid.Items)
-				{
-					if (item == null) continue;
-
-					dynamic u = item;
-
-					users.Add(new
-					{
-						Username = u.Username,
-						Email = u.Email,
-						Status = u.IsActive,
-						CreatedAt = u.CreatedAt
-					});
-				}
-
-				var options = new JsonSerializerOptions
-				{
-					WriteIndented = true
-				};
-
-				string json = JsonSerializer.Serialize(users, options);
-
-				File.WriteAllText(dialog.FileName, json);
-
-				MessageBox.Show("Экспорт успешно выполнен");
 			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("Ошибка экспорта: " + ex.Message);
-			}
+			catch (Exception ex) { MessageBox.Show(ex.Message); }
 		}
 	}
 }

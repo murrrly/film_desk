@@ -89,7 +89,7 @@ namespace MovieApp_Adminpanel
 
 			if (MfaCodeTextBox.Text == "123456") // тестовый код
 			{
-				var profilePage = new AdminProfilePage(); // ✅ передаем ID
+				var profilePage = new DashboardPage(); // ✅ передаем ID
 				var mainWindow = new MainWindow();
 				mainWindow.MainFrame.Content = profilePage; // отображаем страницу профиля
 				mainWindow.Show();

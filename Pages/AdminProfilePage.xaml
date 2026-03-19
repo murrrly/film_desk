@@ -1,59 +1,81 @@
 ﻿<Page x:Class="MovieApp_Adminpanel.Pages.AdminProfilePage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Title="Профиль администратора">
+      Title="Профиль" Background="Transparent">
 
-	<ScrollViewer>
-		<StackPanel Margin="30" Width="520">
-
-			<TextBlock Text="Профиль администратора"
-                       FontSize="26"
-                       FontWeight="Bold"
-                       Margin="0 0 0 20"/>
-
-			<!-- INFO -->
-			<Border Background="#2d2d30" Padding="20" CornerRadius="10" Margin="0 0 0 20">
+	<ScrollViewer VerticalScrollBarVisibility="Auto">
+		<StackPanel Margin="30" Width="500" HorizontalAlignment="Center">
+			<!-- БЛОК ИНФОРМАЦИИ -->
+			<Border Background="{StaticResource DarkBlack}" Padding="25" CornerRadius="15" Margin="0,0,0,20" Effect="{StaticResource DropShadowEffect}">
 				<StackPanel>
-					<TextBlock Text="Информация"
-                               FontSize="18"
-                               FontWeight="Bold"
-                               Margin="0 0 0 10"/>
-					<TextBlock Text="Username"/>
-					<TextBlock x:Name="UsernameText" Margin="0 0 0 6"/>
-					<TextBlock Text="Email"/>
-					<TextBlock x:Name="EmailText" Margin="0 0 0 6"/>
-					<TextBlock Text="Role"/>
-					<TextBlock x:Name="RoleText" Margin="0 0 0 6"/>
-					<TextBlock Text="Last login"/>
-					<TextBlock x:Name="LastLoginText"/>
+					<TextBlock Text="ЛИЧНЫЕ ДАННЫЕ" FontSize="12" FontWeight="Bold" Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
+
+					<UniformGrid Columns="2">
+						<StackPanel Margin="0,0,0,10">
+							<TextBlock Text="Логин" Foreground="{StaticResource Gray}" FontSize="11"/>
+							<TextBlock x:Name="UsernameText" Foreground="{StaticResource White}" FontSize="16" FontWeight="SemiBold"/>
+						</StackPanel>
+						<StackPanel Margin="0,0,0,10">
+							<TextBlock Text="Роль" Foreground="{StaticResource Gray}" FontSize="11"/>
+							<TextBlock x:Name="RoleText" Foreground="{StaticResource White}" FontSize="16" FontWeight="SemiBold"/>
+						</StackPanel>
+						<StackPanel>
+							<TextBlock Text="Email" Foreground="{StaticResource Gray}" FontSize="11"/>
+							<TextBlock x:Name="EmailText" Foreground="{StaticResource White}" FontSize="14"/>
+						</StackPanel>
+						<StackPanel>
+							<TextBlock Text="Последний вход" Foreground="{StaticResource Gray}" FontSize="11"/>
+							<TextBlock x:Name="LastLoginText" Foreground="{StaticResource White}" FontSize="14"/>
+						</StackPanel>
+					</UniformGrid>
 				</StackPanel>
 			</Border>
 
-			<!-- SECURITY -->
-			<Border Background="#2d2d30" Padding="20" CornerRadius="10" Margin="0 0 0 20">
+			<!-- БЛОК БЕЗОПАСНОСТИ -->
+			<Border Background="{StaticResource DarkBlack}" Padding="25" CornerRadius="15" Margin="0,0,0,20">
 				<StackPanel>
-					<TextBlock Text="Безопасность"
-                               FontSize="18"
-                               FontWeight="Bold"
-                               Margin="0 0 0 10"/>
-					<TextBlock Text="Новый пароль"/>
-					<PasswordBox x:Name="PasswordBox" Margin="0 0 0 10"/>
-					<Button Content="Сменить пароль"
-                            Height="35"
-                            Click="ChangePassword_Click"/>
+					<TextBlock Text="БЕЗОПАСНОСТЬ" FontSize="12" FontWeight="Bold" Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
+
+					<TextBlock Text="Новый пароль" Foreground="{StaticResource Gray}" Margin="0,0,0,5"/>
+
+					<!-- ИСПРАВЛЕННЫЙ PasswordBox -->
+					<PasswordBox x:Name="PasswordBox" 
+                     Height="40" 
+                     VerticalContentAlignment="Center"
+                     Padding="10,0,10,0"/>
+
+					<Button Content="Обновить пароль" 
+                Height="40" 
+                Margin="0,20,0,0"
+                Background="{StaticResource PrimaryRed}" 
+                Foreground="{StaticResource White}"
+                BorderThickness="0"
+                FontWeight="Bold" 
+                Cursor="Hand"
+                Click="ChangePassword_Click">
+						<!-- Эффект при наведении на кнопку мы уже настроили в App.xaml, 
+                 но можно добавить локально, если нужно -->
+					</Button>
 				</StackPanel>
 			</Border>
 
-			<!-- STATS -->
-			<Border Background="#2d2d30" Padding="20" CornerRadius="10">
+			<!-- БЛОК СТАТИСТИКИ -->
+			<Border Background="{StaticResource DarkBlack}" Padding="25" CornerRadius="15">
 				<StackPanel>
-					<TextBlock Text="Моя активность"
-                               FontSize="18"
-                               FontWeight="Bold"
-                               Margin="0 0 0 10"/>
-					<TextBlock x:Name="ModeratedReviewsText"/>
-					<TextBlock x:Name="ActionsTodayText"/>
-					<TextBlock x:Name="ActiveSessionsText"/>
+					<TextBlock Text="ВАША АКТИВНОСТЬ" FontSize="12" FontWeight="Bold" Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
+
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Проверено отзывов:" Foreground="{StaticResource Gray}" Width="150"/>
+						<TextBlock x:Name="ModeratedReviewsText" Foreground="{StaticResource White}" FontWeight="Bold"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Действий сегодня:" Foreground="{StaticResource Gray}" Width="150"/>
+						<TextBlock x:Name="ActionsTodayText" Foreground="{StaticResource White}" FontWeight="Bold"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="Активных сессий:" Foreground="{StaticResource Gray}" Width="150"/>
+						<TextBlock x:Name="ActiveSessionsText" Foreground="{StaticResource White}" FontWeight="Bold"/>
+					</StackPanel>
 				</StackPanel>
 			</Border>
 

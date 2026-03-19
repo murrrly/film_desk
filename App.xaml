@@ -56,6 +56,73 @@
 			</Setter>
 		</Style>
 
+		<!-- Стиль для GroupBox (Заголовок "Последние события") -->
+		<Style TargetType="GroupBox">
+			<Setter Property="Foreground" Value="{StaticResource White}"/>
+			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="BorderBrush" Value="{StaticResource MediumBlack}"/>
+			<Setter Property="Padding" Value="10"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="GroupBox">
+						<StackPanel>
+							<ContentPresenter ContentSource="Header" Margin="5,0,0,10" RecognizesAccessKey="True" />
+							<Border BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="1" 
+                                CornerRadius="8" 
+                                Background="{StaticResource DarkBlack}">
+								<ContentPresenter Margin="{TemplateBinding Padding}"/>
+							</Border>
+						</StackPanel>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<!-- Стиль для ListBoxItem (Наведение = Красный) -->
+		<Style TargetType="ListBoxItem">
+			<Setter Property="Foreground" Value="{StaticResource Gray}"/>
+			<Setter Property="Padding" Value="12,8"/>
+			<Setter Property="Margin" Value="0,1"/>
+			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="ListBoxItem">
+						<Border x:Name="Bd" 
+                            Background="Transparent" 
+                            BorderThickness="2,0,0,0" 
+                            BorderBrush="Transparent"
+                            CornerRadius="2"
+                            Padding="{TemplateBinding Padding}">
+							<ContentPresenter />
+						</Border>
+						<ControlTemplate.Triggers>
+							<!-- При наведении: Фон красный, текст белый -->
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter TargetName="Bd" Property="Background" Value="{StaticResource PrimaryRed}"/>
+								<Setter Property="Foreground" Value="{StaticResource White}"/>
+								<Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource LightRed}"/>
+							</Trigger>
+							<!-- При выборе: Темно-серый фон и красная полоска слева -->
+							<Trigger Property="IsSelected" Value="True">
+								<Setter TargetName="Bd" Property="Background" Value="{StaticResource MediumBlack}"/>
+								<Setter Property="Foreground" Value="{StaticResource White}"/>
+								<Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource PrimaryRed}"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<!-- Стиль для самого ListBox -->
+		<Style TargetType="ListBox">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+		</Style>
+
 		<Style TargetType="PasswordBox">
 			<Setter Property="Background" Value="{StaticResource White}"/>
 			<Setter Property="BorderBrush" Value="{StaticResource MediumBlack}"/>

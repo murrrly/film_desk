@@ -10,81 +10,100 @@ namespace MovieApp_Adminpanel
 		{
 			InitializeComponent();
 
-			// При старте показываем Главную
+			// При старте показываем Dashboard (Главную со статистикой)
+			// Подписываемся на событие навигации
+			MainFrame.Navigated += MainFrame_Navigated;
+
 			MainFrame.Navigate(new DashboardPage());
-			SetActiveMenu(MenuDashboard);
+		}
+
+		private void MainFrame_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+		{
+			// Проверяем, какая страница загрузилась, и обновляем UI
+			if (e.Content is DashboardPage)
+			{
+				PageTitle.Text = "Главная";
+				SetActiveMenu(MenuDashboard);
+			}
+			else if (e.Content is ModerationPage)
+			{
+				PageTitle.Text = "Отзывы и модерация";
+				SetActiveMenu(MenuModeration);
+			}
+			else if (e.Content is MonitoringPage)
+			{
+				PageTitle.Text = "История логов";
+				SetActiveMenu(MenuMonitoring);
+			}
 		}
 
 		/// <summary>
-		/// Устанавливает подсветку активного пункта меню
+		/// Устанавливает подсветку активного пункта меню через свойство Tag
 		/// </summary>
-		/// <param name="activeItem"></param>
 		private void SetActiveMenu(MenuItem activeItem)
 		{
-			foreach (var item in new[]
+			// Оставляем только те кнопки, которые соответствуют твоим новым задачам
+			var items = new[]
 			{
 				MenuDashboard,
 				MenuUsers,
 				MenuModeration,
-				MenuMonitoring,
-				MenuAnalytics,
-				MenuSettings,
+				MenuMonitoring, // Используем его как страницу Логов/Истории
+                MenuSettings,
 				MenuProfile
-			})
+			};
+
+			foreach (var item in items)
 			{
-				item.Tag = null;
+				if (item != null) item.Tag = null;
 			}
 
-			activeItem.Tag = "Active";
+			if (activeItem != null) activeItem.Tag = "Active";
 		}
+
+		// --- ОБРАБОТЧИКИ НАЖАТИЙ ---
 
 		private void Dashboard_Click(object sender, RoutedEventArgs e)
 		{
 			MainFrame.Navigate(new DashboardPage());
 			SetActiveMenu(MenuDashboard);
-			PageTitle.Text = "Главная";
+			PageTitle.Text = "Главная (Статистика)";
 		}
 
 		private void Users_Click(object sender, RoutedEventArgs e)
 		{
 			MainFrame.Navigate(new UsersPage());
 			SetActiveMenu(MenuUsers);
-			PageTitle.Text = "Пользователи";
+			PageTitle.Text = "Управление пользователями";
 		}
 
 		private void Moderation_Click(object sender, RoutedEventArgs e)
 		{
 			MainFrame.Navigate(new ModerationPage());
 			SetActiveMenu(MenuModeration);
-			PageTitle.Text = "Модерация";
+			PageTitle.Text = "Отзывы и модерация";
 		}
 
 		private void Monitoring_Click(object sender, RoutedEventArgs e)
 		{
+			// Используем существующую MonitoringPage как страницу логов (истории)
 			MainFrame.Navigate(new MonitoringPage());
 			SetActiveMenu(MenuMonitoring);
-			PageTitle.Text = "Мониторинг";
-		}
-
-		private void Analytics_Click(object sender, RoutedEventArgs e)
-		{
-			MainFrame.Navigate(new AnalyticsPage());
-			SetActiveMenu(MenuAnalytics);
-			PageTitle.Text = "Аналитика";
+			PageTitle.Text = "История логов и активность";
 		}
 
 		private void Settings_Click(object sender, RoutedEventArgs e)
 		{
 			MainFrame.Navigate(new SettingsPage());
 			SetActiveMenu(MenuSettings);
-			PageTitle.Text = "Настройки";
+			PageTitle.Text = "Настройки системы";
 		}
 
 		private void AdminProfile_Click(object sender, RoutedEventArgs e)
 		{
 			MainFrame.Navigate(new AdminProfilePage());
 			SetActiveMenu(MenuProfile);
-			PageTitle.Text = "Профиль";
+			PageTitle.Text = "Профиль администратора";
 		}
 	}
 }
