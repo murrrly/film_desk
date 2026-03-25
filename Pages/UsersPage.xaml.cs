@@ -23,7 +23,7 @@ namespace MovieApp_Adminpanel.Pages
 
 		private void LoadUsers(string search)
 		{
-			var users = new List<object>();
+			var users = new List<dynamic>(); // используем dynamic для удобства
 			try
 			{
 				using var conn = db.GetConnection();
@@ -54,32 +54,37 @@ namespace MovieApp_Adminpanel.Pages
 						ActionColor = isActive ? (SolidColorBrush)Application.Current.Resources["PrimaryRed"] : Brushes.DimGray
 					});
 				}
+
 				UsersGrid.ItemsSource = users;
 			}
-			catch (Exception ex) { MessageBox.Show("Ошибка загрузки: " + ex.Message); }
+			catch (Exception ex)
+			{
+				MessageBox.Show("Ошибка загрузки: " + ex.Message);
+			}
 		}
 
-		// МЕНЯЕМ СТАТУС ПО КЛИКУ
+		// Меняем статус пользователя
 		private void ToggleStatus_Click(object sender, RoutedEventArgs e)
 		{
 			var button = sender as Button;
-			string userEmail = button.Tag.ToString(); // Получаем email из Tag
+			string userEmail = button.Tag.ToString();
 
 			try
 			{
 				using var conn = db.GetConnection();
 				conn.Open();
 
-				// Инвертируем статус (true -> false, false -> true)
 				string query = "UPDATE users SET is_active = NOT is_active WHERE email = @email";
 				using var cmd = new NpgsqlCommand(query, conn);
 				cmd.Parameters.AddWithValue("email", userEmail);
 				cmd.ExecuteNonQuery();
 
-				// Обновляем список, чтобы увидеть изменения
 				LoadUsers(SearchBox.Text);
 			}
-			catch (Exception ex) { MessageBox.Show("Ошибка смены статуса: " + ex.Message); }
+			catch (Exception ex)
+			{
+				MessageBox.Show("Ошибка смены статуса: " + ex.Message);
+			}
 		}
 
 		private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -87,21 +92,45 @@ namespace MovieApp_Adminpanel.Pages
 			LoadUsers(SearchBox.Text);
 		}
 
+		// Экспорт в JSON
 		private void ExportCsv_Click(object sender, RoutedEventArgs e)
 		{
-			// Твой код экспорта остается рабочим
 			try
 			{
-				SaveFileDialog dialog = new SaveFileDialog { Filter = "JSON file (*.json)|*.json", FileName = "users.json" };
+				SaveFileDialog dialog = new SaveFileDialog
+				{
+					Filter = "JSON file (*.json)|*.json",
+					FileName = "users.json"
+				};
+
 				if (dialog.ShowDialog() == true)
 				{
+					// Создаем чистый список для экспорта
+					var exportData = new List<object>();
+					foreach (dynamic item in UsersGrid.ItemsSource)
+					{
+						exportData.Add(new
+						{
+							item.Username,
+							item.Email,
+							item.IsActive,
+							StatusColor = (item.StatusColor as SolidColorBrush)?.Color.ToString(), // HEX
+							item.CreatedAt,
+							item.ActionText,
+							ActionColor = (item.ActionColor as SolidColorBrush)?.Color.ToString() // HEX
+						});
+					}
+
 					var options = new JsonSerializerOptions { WriteIndented = true };
-					string json = JsonSerializer.Serialize(UsersGrid.ItemsSource, options);
+					string json = JsonSerializer.Serialize(exportData, options);
 					File.WriteAllText(dialog.FileName, json);
 					MessageBox.Show("Готово!");
 				}
 			}
-			catch (Exception ex) { MessageBox.Show(ex.Message); }
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
 		}
 	}
 }

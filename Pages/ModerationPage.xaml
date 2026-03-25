@@ -9,8 +9,6 @@
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
-		<TextBlock Text="Модерация контента" FontSize="24" FontWeight="Bold" Foreground="{StaticResource White}" Margin="0,0,0,20"/>
-
 		<TabControl Grid.Row="1" Background="Transparent" BorderThickness="0">
 			<!-- ВКЛАДКА 1: ОЖИДАЮТ ПРОВЕРКИ -->
 			<TabItem Header="Очередь (Pending)">

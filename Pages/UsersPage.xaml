@@ -4,7 +4,6 @@
       Title="Пользователи" Background="Transparent">
 
 	<StackPanel Margin="20">
-		<TextBlock Text="Управление пользователями" FontSize="24" FontWeight="Bold" Foreground="{StaticResource White}" Margin="0,0,0,20"/>
 
 		<StackPanel Orientation="Horizontal" Margin="0,0,0,15">
 			<!-- Поиск теперь с подсказкой (Tag) и в темном стиле из App.xaml -->

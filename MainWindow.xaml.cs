@@ -49,7 +49,6 @@ namespace MovieApp_Adminpanel
 				MenuUsers,
 				MenuModeration,
 				MenuMonitoring, // Используем его как страницу Логов/Истории
-                MenuSettings,
 				MenuProfile
 			};
 
@@ -90,13 +89,6 @@ namespace MovieApp_Adminpanel
 			MainFrame.Navigate(new MonitoringPage());
 			SetActiveMenu(MenuMonitoring);
 			PageTitle.Text = "История логов и активность";
-		}
-
-		private void Settings_Click(object sender, RoutedEventArgs e)
-		{
-			MainFrame.Navigate(new SettingsPage());
-			SetActiveMenu(MenuSettings);
-			PageTitle.Text = "Настройки системы";
 		}
 
 		private void AdminProfile_Click(object sender, RoutedEventArgs e)

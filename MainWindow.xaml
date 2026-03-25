@@ -39,7 +39,6 @@
 			<MenuItem x:Name="MenuUsers" Header="Пользователи" Click="Users_Click" Style="{StaticResource MainMenuItemStyle}"/>
 			<MenuItem x:Name="MenuModeration" Header="Модерация" Click="Moderation_Click" Style="{StaticResource MainMenuItemStyle}"/>
 			<MenuItem x:Name="MenuMonitoring" Header="Логи" Click="Monitoring_Click" Style="{StaticResource MainMenuItemStyle}"/>
-			<MenuItem x:Name="MenuSettings" Header="Настройки" Click="Settings_Click" Style="{StaticResource MainMenuItemStyle}"/>
 			<MenuItem x:Name="MenuProfile" Header="Профиль" Click="AdminProfile_Click" Style="{StaticResource MainMenuItemStyle}"/>
 		</Menu>
 

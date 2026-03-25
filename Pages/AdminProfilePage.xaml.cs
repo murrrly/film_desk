@@ -24,18 +24,22 @@ namespace MovieApp_Adminpanel.Pages
 				{
 					conn.Open();
 
-					// 1. Загружаем данные текущего админа (обычно берется по ID после логина, 
-					// но пока берем первого активного для теста)
-					string adminQuery = "SELECT username, email, role, last_login FROM administrators WHERE is_deleted = false LIMIT 1";
+					string adminQuery = @"
+SELECT username, email, role, last_login 
+FROM administrators 
+WHERE id = @id";
+
 					using (var cmd = new NpgsqlCommand(adminQuery, conn))
 					{
+						cmd.Parameters.AddWithValue("id", AdminSession.CurrentAdminId);
+
 						using (var reader = cmd.ExecuteReader())
 						{
 							if (reader.Read())
 							{
-								UsernameText.Text = reader["username"]?.ToString() ?? "Не указан";
-								EmailText.Text = reader["email"]?.ToString() ?? "—";
-								RoleText.Text = reader["role"]?.ToString().ToUpper() ?? "ADMIN";
+								UsernameText.Text = reader["username"]?.ToString();
+								EmailText.Text = reader["email"]?.ToString();
+								RoleText.Text = reader["role"]?.ToString()?.ToUpper();
 
 								var lastLogin = reader["last_login"];
 								LastLoginText.Text = lastLogin != DBNull.Value
@@ -45,25 +49,17 @@ namespace MovieApp_Adminpanel.Pages
 						}
 					}
 
-					// 2. Считаем статистику (Безопасные запросы)
-
-					// Сколько всего пользователей в системе
 					ModeratedReviewsText.Text = ExecuteScalarSafe(conn, "SELECT COUNT(*) FROM users");
-
-					// Сколько всего фильмов в базе (как показатель активности БД)
 					ActionsTodayText.Text = ExecuteScalarSafe(conn, "SELECT COUNT(*) FROM movies");
-
-					// Активные сессии (если таблицы нет, вернет 1 — это ты)
 					ActiveSessionsText.Text = "1";
 				}
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Ошибка загрузки профиля: " + ex.Message, "БД", MessageBoxButton.OK, MessageBoxImage.Warning);
+				MessageBox.Show("Ошибка загрузки профиля: " + ex.Message);
 			}
 		}
 
-		// Вспомогательный метод, чтобы приложение не падало, если таблицы нет
 		private string ExecuteScalarSafe(NpgsqlConnection conn, string sql)
 		{
 			try
@@ -80,9 +76,9 @@ namespace MovieApp_Adminpanel.Pages
 		{
 			string pass = PasswordBox.Password.Trim();
 
-			if (string.IsNullOrEmpty(pass) || pass.Length < 4)
+			if (string.IsNullOrEmpty(pass))
 			{
-				MessageBox.Show("Пароль слишком короткий!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+				MessageBox.Show("Введите пароль!");
 				return;
 			}
 
@@ -91,22 +87,26 @@ namespace MovieApp_Adminpanel.Pages
 				using (var conn = _db.GetConnection())
 				{
 					conn.Open();
-					// Хешируем пароль (если используешь BCrypt) или сохраняем так для теста
-					// Но лучше BCrypt.Net.BCrypt.HashPassword(pass);
-					string query = "UPDATE administrators SET password_hash = @p WHERE username = @u";
+
+					string query = @"
+UPDATE administrators 
+SET password_hash = crypt(@p, gen_salt('bf'))
+WHERE id = @id";
+
 					using (var cmd = new NpgsqlCommand(query, conn))
 					{
 						cmd.Parameters.AddWithValue("p", pass);
-						cmd.Parameters.AddWithValue("u", UsernameText.Text);
+						cmd.Parameters.AddWithValue("id", AdminSession.CurrentAdminId);
 						cmd.ExecuteNonQuery();
 					}
 				}
-				MessageBox.Show("Пароль успешно изменен!", "Успех");
+
+				MessageBox.Show("Пароль обновлён 🔐");
 				PasswordBox.Clear();
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Ошибка смены пароля: " + ex.Message);
+				MessageBox.Show("Ошибка: " + ex.Message);
 			}
 		}
 	}
