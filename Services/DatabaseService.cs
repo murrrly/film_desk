@@ -1,4 +1,4 @@
-﻿using Npgsql;
+﻿using MySqlConnector;
 using System.Configuration;
 
 namespace MovieApp_Adminpanel.Services
@@ -10,13 +10,13 @@ namespace MovieApp_Adminpanel.Services
 		public DatabaseService()
 		{
 			_connectionString = ConfigurationManager
-				.ConnectionStrings["PostgresConnection"]
+				.ConnectionStrings["MySQLConnection"]
 				.ConnectionString;
 		}
 
-		public NpgsqlConnection GetConnection()
+		public MySqlConnection GetConnection()
 		{
-			return new NpgsqlConnection(_connectionString);
+			return new MySqlConnection(_connectionString);
 		}
 	}
 }

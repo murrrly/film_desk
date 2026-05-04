@@ -1,5 +1,5 @@
 ﻿using MovieApp_Adminpanel.Services;
-using Npgsql;
+using MySqlConnector;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,9 +29,9 @@ SELECT username, email, role, last_login
 FROM administrators 
 WHERE id = @id";
 
-					using (var cmd = new NpgsqlCommand(adminQuery, conn))
+					using (var cmd = new MySqlCommand(adminQuery, conn))
 					{
-						cmd.Parameters.AddWithValue("id", AdminSession.CurrentAdminId);
+						cmd.Parameters.AddWithValue("@id", AdminSession.CurrentAdminId);
 
 						using (var reader = cmd.ExecuteReader())
 						{
@@ -60,16 +60,19 @@ WHERE id = @id";
 			}
 		}
 
-		private string ExecuteScalarSafe(NpgsqlConnection conn, string sql)
+		private string ExecuteScalarSafe(MySqlConnection conn, string sql)
 		{
 			try
 			{
-				using (var cmd = new NpgsqlCommand(sql, conn))
+				using (var cmd = new MySqlCommand(sql, conn))
 				{
 					return cmd.ExecuteScalar()?.ToString() ?? "0";
 				}
 			}
-			catch { return "0"; }
+			catch
+			{
+				return "0";
+			}
 		}
 
 		private void ChangePassword_Click(object sender, RoutedEventArgs e)
@@ -90,13 +93,13 @@ WHERE id = @id";
 
 					string query = @"
 UPDATE administrators 
-SET password_hash = crypt(@p, gen_salt('bf'))
+SET password_hash = SHA2(@p, 256)
 WHERE id = @id";
 
-					using (var cmd = new NpgsqlCommand(query, conn))
+					using (var cmd = new MySqlCommand(query, conn))
 					{
-						cmd.Parameters.AddWithValue("p", pass);
-						cmd.Parameters.AddWithValue("id", AdminSession.CurrentAdminId);
+						cmd.Parameters.AddWithValue("@p", pass);
+						cmd.Parameters.AddWithValue("@id", AdminSession.CurrentAdminId);
 						cmd.ExecuteNonQuery();
 					}
 				}
@@ -106,7 +109,7 @@ WHERE id = @id";
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Ошибка: " + ex.Message);
+				MessageBox.Show("Ошибка смены пароля: " + ex.Message);
 			}
 		}
 	}

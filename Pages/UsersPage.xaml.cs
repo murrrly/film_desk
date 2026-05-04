@@ -1,5 +1,5 @@
 ﻿using MovieApp_Adminpanel.Services;
-using Npgsql;
+using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -13,7 +13,7 @@ namespace MovieApp_Adminpanel.Pages
 {
 	public partial class UsersPage : Page
 	{
-		DatabaseService db = new DatabaseService();
+		private DatabaseService db = new DatabaseService();
 
 		public UsersPage()
 		{
@@ -23,7 +23,8 @@ namespace MovieApp_Adminpanel.Pages
 
 		private void LoadUsers(string search)
 		{
-			var users = new List<dynamic>(); // используем dynamic для удобства
+			var users = new List<dynamic>();
+
 			try
 			{
 				using var conn = db.GetConnection();
@@ -32,26 +33,28 @@ namespace MovieApp_Adminpanel.Pages
 				string query = @"
                     SELECT username, email, is_active, created_at
                     FROM users
-                    WHERE (username ILIKE @search OR email ILIKE @search)
+                    WHERE (username LIKE @search OR email LIKE @search)
                       AND is_deleted = false
                     ORDER BY created_at DESC";
 
-				using var cmd = new NpgsqlCommand(query, conn);
-				cmd.Parameters.AddWithValue("search", $"%{search}%");
+				using var cmd = new MySqlCommand(query, conn);
+				cmd.Parameters.AddWithValue("@search", $"%{search}%");
 
 				using var reader = cmd.ExecuteReader();
+
 				while (reader.Read())
 				{
-					bool isActive = reader.GetBoolean(2);
+					bool isActive = Convert.ToBoolean(reader["is_active"]);
+
 					users.Add(new
 					{
-						Username = reader.GetString(0),
-						Email = reader.GetString(1),
+						Username = reader["username"]?.ToString(),
+						Email = reader["email"]?.ToString(),
 						IsActive = isActive ? "Активен" : "Забанен",
-						StatusColor = isActive ? Brushes.LightGreen : (SolidColorBrush)Application.Current.Resources["PrimaryRed"],
-						CreatedAt = reader.GetDateTime(3).ToString("dd.MM.yyyy"),
+						StatusColor = isActive ? Brushes.LightGreen : Brushes.Red,
+						CreatedAt = Convert.ToDateTime(reader["created_at"]).ToString("dd.MM.yyyy"),
 						ActionText = isActive ? "Заблокировать" : "Разблокировать",
-						ActionColor = isActive ? (SolidColorBrush)Application.Current.Resources["PrimaryRed"] : Brushes.DimGray
+						ActionColor = isActive ? Brushes.Red : Brushes.DimGray
 					});
 				}
 
@@ -63,20 +66,22 @@ namespace MovieApp_Adminpanel.Pages
 			}
 		}
 
-		// Меняем статус пользователя
 		private void ToggleStatus_Click(object sender, RoutedEventArgs e)
 		{
-			var button = sender as Button;
-			string userEmail = button.Tag.ToString();
-
 			try
 			{
+				var button = sender as Button;
+				if (button == null || button.Tag == null) return;
+
+				string userEmail = button.Tag.ToString();
+
 				using var conn = db.GetConnection();
 				conn.Open();
 
 				string query = "UPDATE users SET is_active = NOT is_active WHERE email = @email";
-				using var cmd = new NpgsqlCommand(query, conn);
-				cmd.Parameters.AddWithValue("email", userEmail);
+
+				using var cmd = new MySqlCommand(query, conn);
+				cmd.Parameters.AddWithValue("@email", userEmail);
 				cmd.ExecuteNonQuery();
 
 				LoadUsers(SearchBox.Text);
@@ -92,7 +97,6 @@ namespace MovieApp_Adminpanel.Pages
 			LoadUsers(SearchBox.Text);
 		}
 
-		// Экспорт в JSON
 		private void ExportCsv_Click(object sender, RoutedEventArgs e)
 		{
 			try
@@ -105,8 +109,8 @@ namespace MovieApp_Adminpanel.Pages
 
 				if (dialog.ShowDialog() == true)
 				{
-					// Создаем чистый список для экспорта
 					var exportData = new List<object>();
+
 					foreach (dynamic item in UsersGrid.ItemsSource)
 					{
 						exportData.Add(new
@@ -114,22 +118,27 @@ namespace MovieApp_Adminpanel.Pages
 							item.Username,
 							item.Email,
 							item.IsActive,
-							StatusColor = (item.StatusColor as SolidColorBrush)?.Color.ToString(), // HEX
+							StatusColor = (item.StatusColor as SolidColorBrush)?.Color.ToString(),
 							item.CreatedAt,
 							item.ActionText,
-							ActionColor = (item.ActionColor as SolidColorBrush)?.Color.ToString() // HEX
+							ActionColor = (item.ActionColor as SolidColorBrush)?.Color.ToString()
 						});
 					}
 
-					var options = new JsonSerializerOptions { WriteIndented = true };
+					var options = new JsonSerializerOptions
+					{
+						WriteIndented = true
+					};
+
 					string json = JsonSerializer.Serialize(exportData, options);
 					File.WriteAllText(dialog.FileName, json);
+
 					MessageBox.Show("Готово!");
 				}
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.Message);
+				MessageBox.Show("Ошибка экспорта: " + ex.Message);
 			}
 		}
 	}
