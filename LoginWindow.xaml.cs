@@ -9,13 +9,11 @@ using MySqlConnector;
 using Konscious.Security.Cryptography;
 using System.Text;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace MovieApp_Adminpanel
 {
 	public partial class LoginWindow : Window
 	{
-		private bool _isMfaStep = false;
 		private long _currentUserId;
 		private string _currentUserRole;
 
@@ -47,39 +45,29 @@ namespace MovieApp_Adminpanel
 			RememberMeService.Save(data);
 		}
 
-		/// <summary>
-		/// Проверяет, является ли строка Argon2id хэшем
-		/// </summary>
 		private bool IsArgon2idHash(string hash)
 		{
 			if (string.IsNullOrEmpty(hash)) return false;
 			return hash.StartsWith("$argon2id$");
 		}
 
-		/// <summary>
-		/// Хэширует пароль алгоритмом Argon2id
-		/// </summary>
 		private string HashPasswordArgon2id(string password)
 		{
-			// Генерация соли (16 байт = 128 бит)
 			byte[] salt = new byte[16];
 			using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())
 			{
 				rng.GetBytes(salt);
 			}
 
-			// Параметры Argon2id (рекомендованы OWASP)
 			using (var hasher = new Argon2id(Encoding.UTF8.GetBytes(password)))
 			{
 				hasher.Salt = salt;
-				hasher.DegreeOfParallelism = 1;        // p=1
-				hasher.Iterations = 3;                 // t=3
-				hasher.MemorySize = 65536;             // m=65536 (64 MB)
+				hasher.DegreeOfParallelism = 1;
+				hasher.Iterations = 3;
+				hasher.MemorySize = 65536;
 
-				byte[] hash = hasher.GetBytes(32);     // 32 байта = 256 бит
+				byte[] hash = hasher.GetBytes(32);
 
-				// Формируем строку в формате PHP (совместимость с твоей БД)
-				// $argon2id$v=19$m=65536,t=3,p=1$<salt_base64>$<hash_base64>
 				string saltBase64 = Convert.ToBase64String(salt);
 				string hashBase64 = Convert.ToBase64String(hash);
 
@@ -87,9 +75,6 @@ namespace MovieApp_Adminpanel
 			}
 		}
 
-		/// <summary>
-		/// Проверяет пароль против Argon2id хэша
-		/// </summary>
 		private bool VerifyArgon2idPassword(string password, string storedHash)
 		{
 			if (!IsArgon2idHash(storedHash))
@@ -97,16 +82,13 @@ namespace MovieApp_Adminpanel
 
 			try
 			{
-				// Парсим строку хэша
-				// Формат: $argon2id$v=19$m=65536,t=3,p=1$salt$hash
 				var parts = storedHash.Split('$');
 				if (parts.Length != 6)
 					return false;
 
-				// Парсим параметры (parts[3] = "v=19$m=65536,t=3,p=1" или "m=65536,t=3,p=1")
 				string paramsPart = parts[3];
 				if (paramsPart.StartsWith("v=19$"))
-					paramsPart = paramsPart.Substring(5); // убираем "v=19$"
+					paramsPart = paramsPart.Substring(5);
 
 				var paramPairs = paramsPart.Split(',');
 				int memorySize = 65536;
@@ -130,7 +112,6 @@ namespace MovieApp_Adminpanel
 				byte[] salt = Convert.FromBase64String(parts[4]);
 				byte[] expectedHash = Convert.FromBase64String(parts[5]);
 
-				// Вычисляем хэш пароля с теми же параметрами
 				using (var hasher = new Argon2id(Encoding.UTF8.GetBytes(password)))
 				{
 					hasher.Salt = salt;
@@ -139,8 +120,6 @@ namespace MovieApp_Adminpanel
 					hasher.MemorySize = memorySize;
 
 					byte[] computedHash = hasher.GetBytes(32);
-
-					// Постоянно-временное сравнение (защита от timing attacks)
 					return ConstantTimeEquals(computedHash, expectedHash);
 				}
 			}
@@ -151,9 +130,6 @@ namespace MovieApp_Adminpanel
 			}
 		}
 
-		/// <summary>
-		/// Постоянно-временное сравнение двух массивов байт
-		/// </summary>
 		private static bool ConstantTimeEquals(byte[] a, byte[] b)
 		{
 			if (a.Length != b.Length)
@@ -166,9 +142,6 @@ namespace MovieApp_Adminpanel
 			return result == 0;
 		}
 
-		/// <summary>
-		/// Обновляет пароль на Argon2id в БД
-		/// </summary>
 		private async Task<bool> UpgradeToArgon2id(MySqlConnection conn, long userId, string plainPassword)
 		{
 			try
@@ -239,17 +212,14 @@ AND is_active = true";
 
 							if (isArgon2id)
 							{
-								// Это Argon2id хэш - проверяем нормально
 								passwordValid = VerifyArgon2idPassword(PasswordBox.Password, storedHashOrPassword);
 							}
 							else
 							{
-								// Это не хэш - сравниваем plain text (старый формат)
 								passwordValid = (PasswordBox.Password == storedHashOrPassword);
 
 								if (passwordValid)
 								{
-									// Успешный вход с plain text паролем - обновляем на Argon2id
 									await UpgradeToArgon2id(conn, userId, PasswordBox.Password);
 									ShowStatus("🔄 Пароль обновлен на Argon2id", true);
 									await Task.Delay(1500);
@@ -262,7 +232,6 @@ AND is_active = true";
 								return;
 							}
 
-							// Проверяем права доступа (только admin и moderator)
 							if (role != "admin" && role != "moderator")
 							{
 								ShowStatus("❌ У вас нет доступа к панели администратора", false);
@@ -272,7 +241,6 @@ AND is_active = true";
 							_currentUserId = userId;
 							_currentUserRole = role;
 
-							// Обновляем last_login
 							string updateSql = @"
 UPDATE users
 SET last_login = NOW()
@@ -292,10 +260,11 @@ WHERE id = @id";
 					AdminSession.Username = UsernameTextBox.Text;
 					AdminSession.UserRole = _currentUserRole;
 
-					ShowStatus("✅ Успешный вход!", true);
-					await Task.Delay(800);
-
-					ShowMfaStep();
+					var dashboardPage = new DashboardPage();
+					var mainWindow = new MainWindow();
+					mainWindow.MainFrame.Content = dashboardPage;
+					mainWindow.Show();
+					this.Close();
 				}
 			}
 			catch (Exception ex)
@@ -322,53 +291,6 @@ WHERE id = @id";
 			var fadeOut = new System.Windows.Media.Animation.DoubleAnimation(1, 0, new Duration(TimeSpan.FromMilliseconds(300)));
 			fadeOut.Completed += (s, e) => PopupStatus.Visibility = Visibility.Collapsed;
 			PopupStatus.BeginAnimation(Border.OpacityProperty, fadeOut);
-		}
-
-		private void ShowMfaStep()
-		{
-			_isMfaStep = true;
-			Step1Panel.Visibility = Visibility.Collapsed;
-			Step2Panel.Visibility = Visibility.Visible;
-			StatusBorder.Visibility = Visibility.Collapsed;
-			MfaCodeTextBox.Focus();
-			MfaCodeTextBox.SelectAll();
-		}
-
-		private void BackButton_Click(object sender, RoutedEventArgs e)
-		{
-			_isMfaStep = false;
-			Step2Panel.Visibility = Visibility.Collapsed;
-			Step1Panel.Visibility = Visibility.Visible;
-			StatusBorder.Visibility = Visibility.Collapsed;
-		}
-
-		private void VerifyMfaButton_Click(object sender, RoutedEventArgs e)
-		{
-			if (string.IsNullOrEmpty(MfaCodeTextBox.Text) || MfaCodeTextBox.Text.Length != 6)
-			{
-				ShowStatus("Введите 6-значный код", false);
-				return;
-			}
-
-			if (MfaCodeTextBox.Text == "123456")
-			{
-				var dashboardPage = new DashboardPage();
-				var mainWindow = new MainWindow();
-				mainWindow.MainFrame.Content = dashboardPage;
-				mainWindow.Show();
-				this.Close();
-			}
-			else
-			{
-				ShowStatus("❌ Неверный код", false);
-				MfaCodeTextBox.Clear();
-				MfaCodeTextBox.Focus();
-			}
-		}
-
-		private void MfaCodeTextBox_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			StatusBorder.Visibility = Visibility.Collapsed;
 		}
 	}
 }

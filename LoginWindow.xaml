@@ -52,10 +52,6 @@
 							<ColumnDefinition Width="Auto"/>
 						</Grid.ColumnDefinitions>
 
-						<Button Grid.Column="0" Content="🔙 Назад" Background="#555555" 
-                                Height="40" FontWeight="Bold" Width="120" Click="BackButton_Click"/>
-						<Button Grid.Column="2" Content="✅ Подтвердить" Background="#27ae60" 
-                                Height="40" FontWeight="Bold" Width="120" Click="VerifyMfaButton_Click" IsDefault="True"/>
 					</Grid>
 				</StackPanel>
 

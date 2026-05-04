@@ -33,29 +33,16 @@
 
 			<!-- БЛОК БЕЗОПАСНОСТИ -->
 			<Border Background="{StaticResource DarkBlack}" Padding="25" CornerRadius="15" Margin="0,0,0,20">
-				<StackPanel>
-					<TextBlock Text="БЕЗОПАСНОСТЬ" FontSize="12" FontWeight="Bold" Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
+				<StackPanel Grid.Row="2" Margin="0,10,0,0">
+					<TextBlock Text="Новый пароль:" FontWeight="SemiBold" Margin="0,0,0,5" Foreground="{StaticResource White}"/>
+					<PasswordBox x:Name="PasswordBox" Height="30" Margin="0,0,0,10"/>
 
-					<TextBlock Text="Новый пароль" Foreground="{StaticResource Gray}" Margin="0,0,0,5"/>
+					<TextBlock Text="Подтверждение пароля:" FontWeight="SemiBold" Margin="0,0,0,5" Foreground="{StaticResource White}"/>
+					<PasswordBox x:Name="ConfirmPasswordBox" Height="30" Margin="0,0,0,10"/>
 
-					<!-- ИСПРАВЛЕННЫЙ PasswordBox -->
-					<PasswordBox x:Name="PasswordBox" 
-                     Height="40" 
-                     VerticalContentAlignment="Center"
-                     Padding="10,0,10,0"/>
-
-					<Button Content="Обновить пароль" 
-                Height="40" 
-                Margin="0,20,0,0"
-                Background="{StaticResource PrimaryRed}" 
-                Foreground="{StaticResource White}"
-                BorderThickness="0"
-                FontWeight="Bold" 
-                Cursor="Hand"
-                Click="ChangePassword_Click">
-						<!-- Эффект при наведении на кнопку мы уже настроили в App.xaml, 
-                 но можно добавить локально, если нужно -->
-					</Button>
+					<Button x:Name="ChangePasswordBtn" Content="Изменить пароль" 
+            Click="ChangePassword_Click" 
+            Height="35" Margin="0,10,0,0" />
 				</StackPanel>
 			</Border>
 
