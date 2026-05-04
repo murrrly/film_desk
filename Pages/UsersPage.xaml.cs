@@ -30,11 +30,11 @@ namespace MovieApp_Adminpanel.Pages
 				using var conn = db.GetConnection();
 				conn.Open();
 
+				// Убрано is_deleted, оставлено только is_active
 				string query = @"
                     SELECT username, email, is_active, created_at
                     FROM users
                     WHERE (username LIKE @search OR email LIKE @search)
-                      AND is_deleted = false
                     ORDER BY created_at DESC";
 
 				using var cmd = new MySqlCommand(query, conn);
@@ -78,6 +78,7 @@ namespace MovieApp_Adminpanel.Pages
 				using var conn = db.GetConnection();
 				conn.Open();
 
+				// Обновляем статус пользователя (is_active)
 				string query = "UPDATE users SET is_active = NOT is_active WHERE email = @email";
 
 				using var cmd = new MySqlCommand(query, conn);

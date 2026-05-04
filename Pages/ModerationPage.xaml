@@ -18,8 +18,8 @@
                               BorderThickness="0" IsReadOnly="True">
 						<DataGrid.Columns>
 							<DataGridTextColumn Header="Автор" Binding="{Binding Username}" Width="120"/>
-							<DataGridTextColumn Header="ID Фильма" Binding="{Binding MovieTitle}" Width="100"/>
-							<DataGridTemplateColumn Header="Текст отзыва" Width="*">
+							<DataGridTextColumn Header="ID Фильма" Binding="{Binding MovieTitle}" Width="150"/>
+							<DataGridTemplateColumn Header="Текст отзыва" Width="Auto">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<TextBlock Text="{Binding ReviewText}" TextWrapping="Wrap" MaxHeight="60"/>
@@ -27,7 +27,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 							<DataGridTextColumn Header="Дата" Binding="{Binding CreatedAt}" Width="100"/>
-							<DataGridTemplateColumn Header="Действия" Width="180">
+							<DataGridTemplateColumn Header="Действия" Width="Auto">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<StackPanel Orientation="Horizontal">

@@ -16,59 +16,115 @@ namespace MovieApp_Adminpanel.Pages
 		public DashboardPage()
 		{
 			InitializeComponent();
-			LoadDashboardData();
+			_ = LoadDashboardDataAsync(); // Вызываем асинхронный метод
 			_ = CheckTmdbStatusAsync();
 		}
 
-		private void LoadDashboardData()
+		private async Task LoadDashboardDataAsync()
 		{
 			try
 			{
 				using var conn = db.GetConnection();
-				conn.Open();
+				await conn.OpenAsync();
 
-				// 1. Новые пользователи сегодня
+				// 1. Новые пользователи сегодня (используем created_at)
 				using (var cmdNew = new MySqlCommand(
 					"SELECT COUNT(*) FROM users WHERE DATE(created_at) = CURDATE()", conn))
 				{
-					NewUsersCount.Text = cmdNew.ExecuteScalar()?.ToString() ?? "0";
+					var result = await cmdNew.ExecuteScalarAsync();
+					NewUsersCount.Text = result?.ToString() ?? "0";
 				}
 
-				// 2. Всего пользователей
+				// 2. Всего пользователей (is_active вместо is_deleted)
 				using (var cmdTotal = new MySqlCommand(
-					"SELECT COUNT(*) FROM users WHERE is_deleted = FALSE", conn))
+					"SELECT COUNT(*) FROM users WHERE is_active = true", conn))
 				{
-					TotalUsersCount.Text = cmdTotal.ExecuteScalar()?.ToString() ?? "0";
+					var result = await cmdTotal.ExecuteScalarAsync();
+					TotalUsersCount.Text = result?.ToString() ?? "0";
 				}
 
-				// 3. Очередь модерации
+				// 3. Очередь модерации (таблица user_reviews, поле review_status)
 				using (var cmdReviews = new MySqlCommand(
 					"SELECT COUNT(*) FROM user_reviews WHERE review_status = 'pending'", conn))
 				{
-					PendingReviewsCount.Text = cmdReviews.ExecuteScalar()?.ToString() ?? "0";
+					var result = await cmdReviews.ExecuteScalarAsync();
+					PendingReviewsCount.Text = result?.ToString() ?? "0";
 				}
 
 				// 4. Последние события
-				using (var cmdEvents = new MySqlCommand(@"
-                    SELECT activity_type, created_at
-                    FROM user_activity
-                    ORDER BY created_at DESC
-                    LIMIT 10", conn))
-				using (var reader = cmdEvents.ExecuteReader())
-				{
-					RecentEventsList.Items.Clear();
-
-					while (reader.Read())
-					{
-						string time = Convert.ToDateTime(reader["created_at"]).ToString("HH:mm");
-						string type = reader["activity_type"]?.ToString() ?? "";
-						RecentEventsList.Items.Add($"[{time}]  {type}");
-					}
-				}
+				await LoadRecentEventsAsync(conn);
 			}
 			catch (Exception ex)
 			{
 				MessageBox.Show("Ошибка БД: " + ex.Message);
+			}
+		}
+
+		private async Task LoadRecentEventsAsync(MySqlConnection conn)
+		{
+			try
+			{
+				// Проверяем существование таблицы user_activity
+				var checkTableCmd = new MySqlCommand(@"
+					SELECT COUNT(*) 
+					FROM information_schema.tables 
+					WHERE table_schema = DATABASE() 
+					AND table_name = 'user_activity'", conn);
+
+				bool tableExists = Convert.ToInt32(await checkTableCmd.ExecuteScalarAsync()) > 0;
+
+				if (tableExists)
+				{
+					using (var cmdEvents = new MySqlCommand(@"
+						SELECT activity_type, created_at
+						FROM user_activity
+						ORDER BY created_at DESC
+						LIMIT 10", conn))
+					using (var reader = await cmdEvents.ExecuteReaderAsync())
+					{
+						RecentEventsList.Items.Clear();
+
+						while (await reader.ReadAsync())
+						{
+							string time = Convert.ToDateTime(reader["created_at"]).ToString("HH:mm");
+							string type = reader["activity_type"]?.ToString() ?? "";
+							RecentEventsList.Items.Add($"[{time}]  {type}");
+						}
+					}
+				}
+				else
+				{
+					// Если таблицы нет, показываем события из других таблиц
+					using (var cmdEvents = new MySqlCommand(@"
+						(SELECT 'Добавил отзыв' as activity_type, created_at 
+						 FROM user_reviews 
+						 ORDER BY created_at DESC 
+						 LIMIT 5)
+						UNION ALL
+						(SELECT 'Добавил в список' as activity_type, added_at as created_at 
+						 FROM list_items 
+						 ORDER BY added_at DESC 
+						 LIMIT 5)
+						ORDER BY created_at DESC
+						LIMIT 10", conn))
+					using (var reader = await cmdEvents.ExecuteReaderAsync())
+					{
+						RecentEventsList.Items.Clear();
+
+						while (await reader.ReadAsync())
+						{
+							string time = Convert.ToDateTime(reader["created_at"]).ToString("HH:mm");
+							string type = reader["activity_type"]?.ToString() ?? "";
+							RecentEventsList.Items.Add($"[{time}]  {type}");
+						}
+					}
+				}
+			}
+			catch
+			{
+				// Если ошибка, просто показываем заглушку
+				RecentEventsList.Items.Clear();
+				RecentEventsList.Items.Add("[--:--]  Нет данных о событиях");
 			}
 		}
 

@@ -295,19 +295,17 @@
 		</Style>
 
 		<Style TargetType="DataGrid">
-			<Setter Property="Background" Value="{StaticResource White}"/>
+			<Setter Property="Background" Value="{StaticResource DarkBlack}"/>
 			<Setter Property="BorderBrush" Value="{StaticResource MediumBlack}"/>
 			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="RowBackground" Value="{StaticResource White}"/>
-			<Setter Property="AlternatingRowBackground" Value="{StaticResource LightRed}"/>
-			<Setter Property="AlternatingRowBackground" Value="#FFF5F5"/>
-			<Setter Property="AlternatingRowBackground" Value="{StaticResource LightRed}"/>
-
+			<Setter Property="RowBackground" Value="{StaticResource DarkBlack}"/>
+			<Setter Property="AlternatingRowBackground" Value="{StaticResource MediumBlack}"/>
 			<Setter Property="GridLinesVisibility" Value="None"/>
 			<Setter Property="HeadersVisibility" Value="Column"/>
 			<Setter Property="RowHeaderWidth" Value="0"/>
 			<Setter Property="SelectionMode" Value="Single"/>
 			<Setter Property="FontSize" Value="13"/>
+			<Setter Property="Foreground" Value="{StaticResource White}"/>
 		</Style>
 
 		<Style TargetType="DataGridColumnHeader">
