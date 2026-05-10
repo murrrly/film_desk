@@ -5,10 +5,18 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UseWPF>true</UseWPF>
+    <UseWPF>true</UseWPF> 
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Asstes\**" />
+    <EmbeddedResource Remove="Asstes\**" />
+    <None Remove="Asstes\**" />
+    <Page Remove="Asstes\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\app.ico" />
     <None Remove="logo\logo.png" />
     <None Remove="logo\name_logo.png" />
   </ItemGroup>
@@ -23,6 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\app.ico" />
     <Resource Include="logo\logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

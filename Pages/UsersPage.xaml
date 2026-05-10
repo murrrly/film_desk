@@ -8,7 +8,7 @@
 		<StackPanel Orientation="Horizontal" Margin="0,0,0,15">
 			<!-- Поиск теперь с подсказкой (Tag) и в темном стиле из App.xaml -->
 			<TextBox x:Name="SearchBox" Width="300" Tag="Поиск по имени или email..."
-                     TextChanged="SearchBox_TextChanged" />
+                     TextChanged="SearchBox_TextChanged" Padding="8,0,0,0"/>
 
 			<Button Content="Экспорт в JSON" Margin="15,0" Width="140" Click="ExportCsv_Click" 
                     Background="{StaticResource MediumBlack}"/>

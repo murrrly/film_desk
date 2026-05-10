@@ -6,7 +6,8 @@
         Height="480" Width="350"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Background="#2c2c2c">
+        Background="#2c2c2c"
+        Icon="/Assets/app.ico">
 
 	<Grid>
 		<Border Background="#3a3a3a" Margin="20" Padding="10" CornerRadius="10">

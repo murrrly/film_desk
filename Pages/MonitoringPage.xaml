@@ -7,7 +7,11 @@
 
 		<DataGrid x:Name="LogsGrid"
                   Height="500"
-                  AutoGenerateColumns="False">
+                  AutoGenerateColumns="False"
+                  SelectionMode="Single"
+                SelectionUnit="FullRow"
+                IsReadOnly="True"
+                Focusable="False">
 
 			<DataGrid.Columns>
 
