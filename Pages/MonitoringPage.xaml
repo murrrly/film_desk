@@ -9,9 +9,9 @@
                   Height="500"
                   AutoGenerateColumns="False"
                   SelectionMode="Single"
-                SelectionUnit="FullRow"
-                IsReadOnly="True"
-                Focusable="False">
+                  SelectionUnit="FullRow"
+                  IsReadOnly="True"
+                  MouseDoubleClick="LogsGrid_MouseDoubleClick">
 
 			<DataGrid.Columns>
 
